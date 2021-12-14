@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="KubernetesApiSettings">
+    <option name="kubeconfigPath" value="$USER_HOME$/Downloads/k8s-1-21-5-do-0-sgp1-1638952070173-kubeconfig.yaml" />
+  </component>
+</project>
