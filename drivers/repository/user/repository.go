@@ -16,6 +16,37 @@ func NewRepository(gormDb *gorm.DB) user.IUserRepository {
 	}
 }
 
+func (r *UserRepository) GetEmail(id uint) (string, error) {
+	var userRepo User
+	err := r.db.Where("id = ?", id).First(&userRepo).Error
+	if err != nil {
+		return "", err
+	}
+	return userRepo.Email, nil
+}
+
+func (r *UserRepository) ChangePassword(id int, oldPassword, newPassword string) (string, error) {
+	var userRepo User
+
+	email, err := r.GetEmail(uint(id))
+	if err != nil {
+		return "", err
+	}
+
+	_, err = r.CheckLogin(email, oldPassword)
+	if err != nil {
+		return "", err
+	}
+
+	hashedPassword, _ := encrypt.Hash(newPassword)
+	userRepo.Password = hashedPassword
+	err = r.db.Save(&userRepo).Error
+	if err != nil {
+		return "", err
+	}
+	return "success", nil
+}
+
 func (r *UserRepository) CheckLogin(email, password string) (user.Domain, error) {
 	var userRepo User
 
@@ -30,17 +61,25 @@ func (r *UserRepository) CheckLogin(email, password string) (user.Domain, error)
 	return userRepo.ToDomain(), nil
 }
 
-func (r *UserRepository) Register(users *user.Domain) (user.Domain, error) {
+func (r *UserRepository) Register(users *user.Domain) (string, error) {
 	userIn := FromDomain(users)
 	hashedPassword, err := encrypt.Hash(users.Password)
 	if err != nil {
-		return user.Domain{}, err
+		return "", err
 	}
 	userIn.Password = hashedPassword
 	err = r.db.Create(userIn).Error
 	if err != nil {
-		return userIn.ToDomain(), err
+		return "", err
 	}
-	return userIn.ToDomain(), nil
+	return "success", nil
+}
 
+func (r *UserRepository) DetailUser(id int) (user.Domain, error) {
+	var userRepo User
+	err := r.db.Where("id = ? ", id).First(&userRepo).Error
+	if err != nil {
+		return user.Domain{},err
+	}
+	return userRepo.ToDomain(),nil
 }

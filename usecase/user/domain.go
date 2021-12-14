@@ -13,10 +13,14 @@ type Domain struct {
 
 type IUserUsecase interface {
 	Login(username, password string) (Domain, error)
-	Register(user Domain) (Domain, error)
+	Register(user Domain) (string, error)
+	ChangePassword(id int, oldPassword, newPassword string) (string, error)
+	GetCurrentUser(id int) (Domain, error)
 }
 
 type IUserRepository interface {
 	CheckLogin(email, password string) (Domain, error)
-	Register(users *Domain) (Domain, error)
+	Register(users *Domain) (string, error)
+	ChangePassword(id int, oldPassword, newPassword string) (string, error)
+	DetailUser(id int) (Domain, error)
 }

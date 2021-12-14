@@ -38,7 +38,7 @@ func (d *UserDelivery) Register(c echo.Context) (err error) {
 			return delivery.ErrorResponse(c, http.StatusInternalServerError, "error", err)
 		}
 	}
-	return delivery.SuccessResponse(c, response.FromDomainUser(out))
+	return delivery.SuccessResponse(c, out)
 }
 
 func (d *UserDelivery) Login(c echo.Context) error {
@@ -62,9 +62,43 @@ func (d *UserDelivery) Login(c echo.Context) error {
 	return delivery.SuccessResponse(c, response.FromDomainUser(res))
 }
 
+func (d *UserDelivery) ChangePassword(c echo.Context) error {
+	jwtGetID := middleware.GetUser(c)
+	var user request.PasswordUpdate
+	err := c.Bind(&user)
+	if err != nil {
+		return delivery.ErrorResponse(c, http.StatusInternalServerError, "Failed to Bind Data", err)
+	}
+	err = c.Validate(&user)
+	if err != nil {
+		return delivery.ErrorResponse(c, http.StatusBadRequest, "Failed, Wrong Input", err)
+	}
+
+	id := jwtGetID.ID
+	res, err := d.usecase.ChangePassword(id, user.OldPassword, user.NewPassword)
+	if err != nil {
+		return delivery.ErrorResponse(c, http.StatusInternalServerError, "Internal Error", err)
+	} else if res == "user not found" {
+		return delivery.ErrorResponse(c, http.StatusNoContent, "User not Found", nil)
+	}
+
+	return delivery.SuccessResponse(c, res)
+}
+
+func (d *UserDelivery) GetDetail(c echo.Context) error {
+	jwtGetID := middleware.GetUser(c)
+	resp, err := d.usecase.GetCurrentUser(jwtGetID.ID)
+	if err != nil {
+		return delivery.ErrorResponse(c, http.StatusInternalServerError, "Internal Error", err)
+	}
+	return delivery.SuccessResponse(c, response.FromDomain(resp))
+}
+
 func (d *UserDelivery) JWTTEST(c echo.Context) error {
 	jwtGetID := middleware.GetUser(c)
 	log.Println(jwtGetID.Role)
+	log.Println(jwtGetID.ID)
 	return delivery.SuccessResponse(c, jwtGetID.Role)
-
 }
+
+
