@@ -25,3 +25,11 @@ func (p *ProductUsecase) GetTagihanPLN() (Domain, error) {
 	}
 	return product, nil
 }
+
+func (p *ProductUsecase) GetProduct(id int) ([]Domain,error) {
+	resp, err := p.repo.GetProduct(id)
+	if err != nil {
+		return []Domain{},err
+	}
+	return resp,nil
+}

@@ -35,9 +35,18 @@ func (p *Product) ToDomain() product.Domain {
 		ID:          p.ID,
 		Name:        p.Name,
 		Description: p.Description,
-		CategoryID:  p.CategoryID,
+		Category:    p.Category.Name,
 		Price:       p.Price,
 		Stocks:      p.Stocks,
 		Discount:    p.Discount,
 	}
+}
+
+func ToDomainList(products []Product) []product.Domain {
+	var dummyDomain []product.Domain
+	for x := range products {
+		dummyProducts := products[x].ToDomain()
+		dummyDomain = append(dummyDomain,dummyProducts)
+	}
+	return dummyDomain
 }

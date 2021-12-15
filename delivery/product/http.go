@@ -6,6 +6,7 @@ import (
 	"ppob-service/delivery"
 	"ppob-service/delivery/product/response"
 	"ppob-service/usecase/product"
+	"strconv"
 )
 
 type ProductDelivery struct {
@@ -24,4 +25,16 @@ func (p *ProductDelivery) GetTagihanPLN(c echo.Context) error {
 		return delivery.ErrorResponse(c, http.StatusInternalServerError, "", err)
 	}
 	return delivery.SuccessResponse(c, response.FromDomain(resp))
+}
+
+func (p *ProductDelivery) GetProduct(c echo.Context) error {
+	idParam, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return delivery.ErrorResponse(c, http.StatusInternalServerError, "Wrong Params", err)
+	}
+	resp, err := p.usecase.GetProduct(idParam)
+	if err != nil {
+		return delivery.ErrorResponse(c, http.StatusInternalServerError, "", err)
+	}
+	return delivery.SuccessResponse(c, response.FromDomainList(resp))
 }

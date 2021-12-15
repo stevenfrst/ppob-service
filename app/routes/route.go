@@ -29,6 +29,7 @@ func (d RouteControllerList) RouteRegister(c *echo.Echo) {
 
 	//Product
 	c.GET("/v1/product/pln",d.ProductDelivery.GetTagihanPLN)
+	c.GET("/v1/product/:id",d.ProductDelivery.GetProduct)
 
 	c.GET("/test", d.UserDelivery.JWTTEST, jwt,RoleValidationUser())
 
