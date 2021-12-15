@@ -8,21 +8,27 @@ import (
 	"ppob-service/delivery"
 )
 import userDelivery "ppob-service/delivery/user"
+import productDelivery "ppob-service/delivery/product"
 import _middleware "ppob-service/app/middleware"
 
 type RouteControllerList struct {
 	UserDelivery userDelivery.UserDelivery
+	ProductDelivery productDelivery.ProductDelivery
 	JWTConfig    middleware.JWTConfig
 }
 
 func (d RouteControllerList) RouteRegister(c *echo.Echo) {
 	jwt := middleware.JWTWithConfig(d.JWTConfig)
 
+
+	//User
 	c.POST("/v1/login", d.UserDelivery.Login)
 	c.POST("/v1/register", d.UserDelivery.Register)
 	c.POST("/v1/user/change",d.UserDelivery.ChangePassword,jwt,RoleValidationUser())
 	c.GET("/v1/user",d.UserDelivery.GetDetail,jwt,RoleValidationUser())
 
+	//Product
+	c.GET("/v1/product/pln",d.ProductDelivery.GetTagihanPLN)
 
 	c.GET("/test", d.UserDelivery.JWTTEST, jwt,RoleValidationUser())
 

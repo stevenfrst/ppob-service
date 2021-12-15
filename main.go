@@ -17,6 +17,9 @@ import (
 	transactionRepo "ppob-service/drivers/repository/transaction"
 	userRepo "ppob-service/drivers/repository/user"
 	userUsecase "ppob-service/usecase/user"
+	productDelivery "ppob-service/delivery/product"
+	productUsecase "ppob-service/usecase/product"
+
 )
 
 type CustomValidator struct {
@@ -89,8 +92,14 @@ func main() {
 	userIUsecase := userUsecase.NewUseCase(userIRepo, &jwt)
 	userIDelivery := userDelivery.NewUserDelivery(userIUsecase)
 
+	// Product
+	productIrepo := productRepo.NewRepository(db)
+	productIUsecase := productUsecase.NewUseCase(productIrepo)
+	productIdelivery := productDelivery.NewProductDelivery(productIUsecase)
+
 	routesInit := routes.RouteControllerList{
 		UserDelivery: *userIDelivery,
+		ProductDelivery: *productIdelivery,
 		JWTConfig:    jwt.Init(),
 	}
 
