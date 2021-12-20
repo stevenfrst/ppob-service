@@ -82,7 +82,7 @@ func dbMigrate(db *gorm.DB) {
 // @securityDefinitions.apikey BearerAuth
 // @in header
 // @name Authorization
-// @host 887e-180-253-66-35.ngrok.io
+// @host localhost:1234
 // @BasePath /
 // @schemes http
 func main() {

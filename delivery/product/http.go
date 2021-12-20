@@ -48,7 +48,7 @@ func (p *ProductDelivery) GetTagihanPLN(c echo.Context) error {
 // @Success 200 {object} delivery.JSONSuccessResult{}
 // @Success 400 {object} delivery.JSONBadReqResult{}
 // @Success 500 {object} delivery.JSONInternalResult{}
-// @Router /v1/product/:id [get]
+// @Router /v1/product/{id} [get]
 func (p *ProductDelivery) GetProduct(c echo.Context) error {
 	idParam, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -97,11 +97,11 @@ func (p *ProductDelivery) EditProduct(c echo.Context) error {
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Param id path int64 true "ID Product"
+// @Param id path string true "ID Product"
 // @Success 200 {object} delivery.JSONSuccessResult{}
 // @Success 400 {object} delivery.JSONBadReqResult{}
 // @Success 500 {object} delivery.JSONInternalResult{}
-// @Router /v1/product/:id [delete]
+// @Router /v1/product/{id} [delete]
 func (p *ProductDelivery) DeleteProduct(c echo.Context) error {
 	idParam, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -115,7 +115,17 @@ func (p *ProductDelivery) DeleteProduct(c echo.Context) error {
 	return delivery.SuccessResponse(c, "success")
 }
 
-
+// GetBestSellerCategory godoc
+// @Summary Get Best Seller
+// @Description Get Best Seller each Category
+// @Tags Product
+// @Accept json
+// @Produce json
+// @Param id path string true "id category"
+// @Success 200 {object} delivery.JSONSuccessResult{}
+// @Success 400 {object} delivery.JSONBadReqResult{}
+// @Success 500 {object} delivery.JSONInternalResult{}
+// @Router /v1/bestseller/{id} [get]
 func (p *ProductDelivery) GetBestSellerCategory(c echo.Context) error {
 	idParam, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

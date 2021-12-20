@@ -28,6 +28,50 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/v1/bestseller/{id}": {
+            "get": {
+                "description": "Get Best Seller each Category",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Get Best Seller",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id category",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/delivery.JSONSuccessResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/delivery.JSONBadReqResult"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/delivery.JSONInternalResult"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/login": {
             "post": {
                 "description": "login user to server with json.",
@@ -132,7 +176,42 @@ var doc = `{
                 }
             }
         },
-        "/v1/product/:id": {
+        "/v1/product/pln": {
+            "get": {
+                "description": "Get Random Tagihan PLN",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Get Random PLN",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/delivery.JSONSuccessResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/delivery.JSONBadReqResult"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/delivery.JSONInternalResult"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/product/{id}": {
             "get": {
                 "description": "Get Product via Param",
                 "consumes": [
@@ -194,48 +273,13 @@ var doc = `{
                 "summary": "Delete Product",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "ID Product",
                         "name": "id",
                         "in": "path",
                         "required": true
                     }
                 ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/delivery.JSONSuccessResult"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/delivery.JSONBadReqResult"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/delivery.JSONInternalResult"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/product/pln": {
-            "get": {
-                "description": "Get Random Tagihan PLN",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Product"
-                ],
-                "summary": "Get Random PLN",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -561,7 +605,7 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
-	Host:        "887e-180-253-66-35.ngrok.io",
+	Host:        "localhost:1234",
 	BasePath:    "/",
 	Schemes:     []string{"http"},
 	Title:       "PPOB Service",

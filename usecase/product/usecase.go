@@ -58,6 +58,8 @@ func (p *ProductUsecase) GetBestSellerCategory(id int) (resp []Domain, err error
 	}
 	if err != nil {
 		return []Domain{}, err
+	} else if resp[0].ID == 0 {
+		resp, _ = p.repo.GetBestSellerCategorySQL(id)
 	}
 	return resp, nil
 }

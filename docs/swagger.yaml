@@ -97,7 +97,7 @@ definitions:
     - password
     - username
     type: object
-host: 887e-180-253-66-35.ngrok.io
+host: localhost:1234
 info:
   contact: {}
   description: Dokumentasi Swagger e Slurr
@@ -108,6 +108,35 @@ info:
   title: PPOB Service
   version: "1.0"
 paths:
+  /v1/bestseller/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get Best Seller each Category
+      parameters:
+      - description: id category
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/delivery.JSONSuccessResult'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/delivery.JSONBadReqResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/delivery.JSONInternalResult'
+      summary: Get Best Seller
+      tags:
+      - Product
   /v1/login:
     post:
       consumes:
@@ -176,7 +205,7 @@ paths:
       summary: Edit Product
       tags:
       - Product
-  /v1/product/:id:
+  /v1/product/{id}:
     delete:
       consumes:
       - application/json
@@ -186,7 +215,7 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
