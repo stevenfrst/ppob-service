@@ -26,10 +26,38 @@ func (p *ProductUsecase) GetTagihanPLN() (Domain, error) {
 	return product, nil
 }
 
-func (p *ProductUsecase) GetProduct(id int) ([]Domain,error) {
+func (p *ProductUsecase) GetProduct(id int) ([]Domain, error) {
 	resp, err := p.repo.GetProduct(id)
 	if err != nil {
-		return []Domain{},err
+		return []Domain{}, err
 	}
-	return resp,nil
+	return resp, nil
+}
+
+func (p *ProductUsecase) EditProduct(item Domain) error {
+	err := p.repo.EditProduct(item)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *ProductUsecase) Delete(id int) error {
+	err := p.repo.Delete(id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *ProductUsecase) GetBestSellerCategory(id int) (resp []Domain, err error) {
+	for x := 0; x < 5; x++ {
+		rep, _ := p.repo.GetBestSellerCategory(id, x)
+		resp = append(resp, rep)
+		//log.Println(id, x)
+	}
+	if err != nil {
+		return []Domain{}, err
+	}
+	return resp, nil
 }

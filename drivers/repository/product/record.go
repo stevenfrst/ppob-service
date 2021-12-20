@@ -17,6 +17,7 @@ type Product struct {
 	Price       int
 	Stocks      int
 	Discount    int
+	Sold        int
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`
@@ -42,11 +43,15 @@ func (p *Product) ToDomain() product.Domain {
 	}
 }
 
+type RedisProduct struct {
+	product []Product
+}
+
 func ToDomainList(products []Product) []product.Domain {
 	var dummyDomain []product.Domain
 	for x := range products {
 		dummyProducts := products[x].ToDomain()
-		dummyDomain = append(dummyDomain,dummyProducts)
+		dummyDomain = append(dummyDomain, dummyProducts)
 	}
 	return dummyDomain
 }

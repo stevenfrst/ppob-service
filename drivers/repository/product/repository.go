@@ -1,6 +1,8 @@
 package product
 
 import (
+	"fmt"
+	"github.com/gomodule/redigo/redis"
 	"gorm.io/gorm"
 	"log"
 	"math/rand"
@@ -9,12 +11,14 @@ import (
 )
 
 type ProductRepository struct {
-	db *gorm.DB
+	db    *gorm.DB
+	cache redis.Conn
 }
 
-func NewRepository(gormDB *gorm.DB) product.IProductRepository {
+func NewRepository(gormDB *gorm.DB, cache redis.Conn) product.IProductRepository {
 	return &ProductRepository{
-		db: gormDB,
+		db:    gormDB,
+		cache: cache,
 	}
 }
 
@@ -45,5 +49,62 @@ func (p *ProductRepository) GetProduct(id int) ([]product.Domain, error) {
 	if err != nil {
 		return ToDomainList([]Product{}), err
 	}
-	return ToDomainList(repoModel),nil
+	return ToDomainList(repoModel), nil
+}
+
+func (p *ProductRepository) getProductByID(id int) Product {
+	var repoModel Product
+	p.db.Find(&repoModel).Where("id = ?", id)
+	return repoModel
+}
+
+func (p *ProductRepository) EditProduct(item product.Domain) error {
+	var repoModel Product
+	repoModel = p.getProductByID(int(item.ID))
+	repoModel.Name = item.Name
+	repoModel.Price = item.Price
+	repoModel.Discount = item.Discount
+	repoModel.Description = item.Description
+	repoModel.Stocks = item.Stocks
+	err := p.db.Save(&repoModel).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *ProductRepository) Delete(id int) error {
+	var repoModel Product
+	err := p.db.Where("id = ?", id).Delete(&repoModel).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *ProductRepository) GetBestSellerCategory(id, item int) (product.Domain, error) {
+	category := fmt.Sprintf("product_%v:%v", item, id)
+	//log.Println(category,"+++++")
+	rep, err := redis.Values(p.cache.Do("HGETALL", category))
+	if err != nil {
+		return product.Domain{}, err
+	}
+
+	var repoModel product.Domain
+
+	err = redis.ScanStruct(rep, &repoModel)
+	if err != nil {
+		return product.Domain{}, err
+	}
+	//log.Println(rep,"++++++")
+	return repoModel, err
+}
+
+func (p *ProductRepository) GetBestSellerCategorySQL(id int) ([]product.Domain, error) {
+	var repoModels []Product
+	err := p.db.Order("sold DESC").Where("category_id = ?", id).Find(&repoModels).Limit(5).Error
+	if err != nil {
+		return ToDomainList(repoModels), err
+	}
+	return ToDomainList(repoModels), nil
 }

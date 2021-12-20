@@ -15,6 +15,35 @@ type BaseReponse struct {
 	Data interface{} `json:"data"`
 }
 
+// Swagger documentation
+type JSONSuccessResult struct {
+	Meta struct {
+		Status   int      `json:"status" example:"200"`
+		Message  string   `json:"message" example:"success"`
+		Messages []string `json:"messages"`
+	} `json:"meta"`
+	Data interface{} `json:"data"`
+}
+
+type JSONBadReqResult struct {
+	Meta struct {
+		Status   int      `json:"status" example:"400"`
+		Message  string   `json:"message" example:"failed"`
+		Messages []string `json:"messages"`
+	} `json:"meta"`
+	Data interface{} `json:"data"`
+}
+
+type JSONInternalResult struct {
+	Meta struct {
+		Status   int      `json:"status" example:"500"`
+		Message  string   `json:"message" example:"error database"`
+		Messages []string `json:"messages"`
+	} `json:"meta"`
+	Data interface{} `json:"data"`
+}
+
+
 func SuccessResponse(c echo.Context, data interface{}) error {
 	response := BaseReponse{}
 	response.Meta.Status = http.StatusOK
