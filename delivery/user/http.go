@@ -145,5 +145,5 @@ func (d *UserDelivery) JWTTEST(c echo.Context) error {
 	jwtGetID := middleware.GetUser(c)
 	log.Println(jwtGetID.Role)
 	log.Println(jwtGetID.ID)
-	return delivery.SuccessResponse(c, jwtGetID.Role)
+	return delivery.SuccessResponse(c, jwtGetID.ID)
 }
