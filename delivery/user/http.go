@@ -21,6 +21,18 @@ func NewUserDelivery(uc user.IUserUsecase) *UserDelivery {
 		usecase: uc,
 	}
 }
+
+// Register godoc
+// @Summary Register User to server
+// @Description register user to server with json.
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param  user body request.UserRegister true "User Data"
+// @Success 200 {object} delivery.JSONSuccessResult{}
+// @Success 400 {object} delivery.JSONBadReqResult{}
+// @Success 500 {object} delivery.JSONInternalResult{}
+// @Router /v1/register [post]
 func (d *UserDelivery) Register(c echo.Context) (err error) {
 	var user request.UserRegister
 	if err = c.Bind(&user); err != nil {
@@ -41,6 +53,18 @@ func (d *UserDelivery) Register(c echo.Context) (err error) {
 	return delivery.SuccessResponse(c, out)
 }
 
+// Login godoc
+// @Summary Login User to server
+// @Description login user to server with json.
+// @Tags User
+// @Accept mpfd
+// @Produce json
+// @Param email formData string true "email" default(admin)
+// @Param password formData string true "password" default(admin)
+// @Success 200 {object} delivery.JSONSuccessResult{}
+// @Success 400 {object} delivery.JSONBadReqResult{}
+// @Success 500 {object} delivery.JSONInternalResult{}
+// @Router /v1/login [post]
 func (d *UserDelivery) Login(c echo.Context) error {
 	email := c.FormValue("email")
 	password := c.FormValue("password")
@@ -62,6 +86,18 @@ func (d *UserDelivery) Login(c echo.Context) error {
 	return delivery.SuccessResponse(c, response.FromDomainUser(res))
 }
 
+// ChangePassword godoc
+// @Summary Change Password
+// @Description Change Password user to server with json.
+// @Tags User
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param  user body request.PasswordUpdate true "User Data"
+// @Success 200 {object} delivery.JSONSuccessResult{}
+// @Success 400 {object} delivery.JSONBadReqResult{}
+// @Success 500 {object} delivery.JSONInternalResult{}
+// @Router /v1/user/change [post]
 func (d *UserDelivery) ChangePassword(c echo.Context) error {
 	jwtGetID := middleware.GetUser(c)
 	var user request.PasswordUpdate
@@ -85,6 +121,17 @@ func (d *UserDelivery) ChangePassword(c echo.Context) error {
 	return delivery.SuccessResponse(c, res)
 }
 
+// GetDetail godoc
+// @Summary Get Detail User
+// @Description Get Detail User Data.
+// @Tags User
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} delivery.JSONSuccessResult{}
+// @Success 400 {object} delivery.JSONBadReqResult{}
+// @Success 500 {object} delivery.JSONInternalResult{}
+// @Router /v1/user [get]
 func (d *UserDelivery) GetDetail(c echo.Context) error {
 	jwtGetID := middleware.GetUser(c)
 	resp, err := d.usecase.GetCurrentUser(jwtGetID.ID)
@@ -98,7 +145,5 @@ func (d *UserDelivery) JWTTEST(c echo.Context) error {
 	jwtGetID := middleware.GetUser(c)
 	log.Println(jwtGetID.Role)
 	log.Println(jwtGetID.ID)
-	return delivery.SuccessResponse(c, jwtGetID.Role)
+	return delivery.SuccessResponse(c, jwtGetID.ID)
 }
-
-
