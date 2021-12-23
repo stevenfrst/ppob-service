@@ -13,10 +13,9 @@ type Product struct {
 	Description string
 	CategoryID  uint
 	Category    Category
-	Transaction []transaction.Transaction
+	Transaction []transaction.DetailTransaction
 	Price       int
 	Stocks      int
-	Discount    int
 	Sold        int
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
@@ -26,6 +25,7 @@ type Product struct {
 type Category struct {
 	ID        uint `gorm:"primarykey"`
 	Name      string
+	Tax       int
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
@@ -39,7 +39,7 @@ func (p *Product) ToDomain() product.Domain {
 		Category:    p.Category.Name,
 		Price:       p.Price,
 		Stocks:      p.Stocks,
-		Discount:    p.Discount,
+		Tax:         p.Category.Tax,
 	}
 }
 

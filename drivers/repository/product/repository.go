@@ -63,7 +63,6 @@ func (p *ProductRepository) EditProduct(item product.Domain) error {
 	repoModel = p.getProductByID(int(item.ID))
 	repoModel.Name = item.Name
 	repoModel.Price = item.Price
-	repoModel.Discount = item.Discount
 	repoModel.Description = item.Description
 	repoModel.Stocks = item.Stocks
 	err := p.db.Save(&repoModel).Error

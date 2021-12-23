@@ -1,18 +1,22 @@
 package transaction
 
-import "time"
+import (
+	"gorm.io/gorm"
+	"time"
+)
 
 type Domain struct {
-	ID                uint
+	ID                uint `gorm:"primarykey"`
 	UserID            uint
-	ProductID         uint
-	Nominal           int
+	Total             int
 	Link              string
 	TransactionStatus string
 	FraudStatus       string
 	PaymentType       string
 	Provider          string
 	CreatedAt         time.Time
+	UpdatedAt         time.Time
+	DeletedAt         gorm.DeletedAt `gorm:"index"`
 }
 
 type Notification struct {

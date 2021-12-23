@@ -2,6 +2,7 @@ package user
 
 import (
 	"gorm.io/gorm"
+	"log"
 	"ppob-service/helpers/encrypt"
 	"ppob-service/usecase/user"
 )
@@ -26,17 +27,21 @@ func (r *UserRepository) GetEmail(id uint) (string, error) {
 }
 
 func (r *UserRepository) ChangePassword(id int, oldPassword, newPassword string) (string, error) {
-	var userRepo User
+	//var userRepo User
 
 	email, err := r.GetEmail(uint(id))
+	log.Println("EMAIL", email)
 	if err != nil {
 		return "", err
 	}
 
-	_, err = r.CheckLogin(email, oldPassword)
+	resp, err := r.CheckLogin(email, oldPassword)
+	log.Println(resp)
 	if err != nil {
 		return "", err
 	}
+
+	userRepo := FromDomain(&resp)
 
 	hashedPassword, _ := encrypt.Hash(newPassword)
 	userRepo.Password = hashedPassword
@@ -79,7 +84,7 @@ func (r *UserRepository) DetailUser(id int) (user.Domain, error) {
 	var userRepo User
 	err := r.db.Where("id = ? ", id).First(&userRepo).Error
 	if err != nil {
-		return user.Domain{},err
+		return user.Domain{}, err
 	}
-	return userRepo.ToDomain(),nil
+	return userRepo.ToDomain(), nil
 }

@@ -7,7 +7,7 @@ type Domain struct {
 	Password    string
 	Email       string `gorm:"unique"`
 	PhoneNumber string `gorm:"unique"`
-	Pin         int
+	IsVerified  bool
 	Token       string
 }
 

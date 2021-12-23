@@ -7,26 +7,36 @@ import (
 )
 
 type Transaction struct {
-	ID                uint `gorm:"primarykey"`
-	UserID            uint
-	ProductID         uint
-	Nominal           int
-	Link              string
-	TransactionStatus string
-	FraudStatus       string
-	PaymentType       string
-	Provider          string
-	CreatedAt         time.Time
-	UpdatedAt         time.Time
-	DeletedAt         gorm.DeletedAt `gorm:"index"`
+	ID                  uint `gorm:"primarykey"`
+	UserID              uint
+	DetailTransactionID uint
+	DetailTransaction   DetailTransaction
+	Total               int
+	Link                string
+	TransactionStatus   string
+	FraudStatus         string
+	PaymentType         string
+	Provider            string
+	CreatedAt           time.Time
+	UpdatedAt           time.Time
+	DeletedAt           gorm.DeletedAt `gorm:"index"`
+}
+
+type DetailTransaction struct {
+	ID        uint `gorm:"primarykey"`
+	ProductID uint
+	Discount  int
+	Subtotal  int
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
 func FromDomainTransaction(domain transaction.Domain) Transaction {
 	return Transaction{
 		ID:                domain.ID,
 		UserID:            domain.UserID,
-		ProductID:         domain.ProductID,
-		Nominal:           domain.Nominal,
+		Total:             domain.Total,
 		Link:              domain.Link,
 		TransactionStatus: domain.TransactionStatus,
 		FraudStatus:       domain.FraudStatus,
@@ -39,8 +49,7 @@ func (t *Transaction) ToDomain() transaction.Domain {
 	return transaction.Domain{
 		ID:                t.ID,
 		UserID:            t.UserID,
-		ProductID:         t.ProductID,
-		Nominal:           t.Nominal,
+		Total:             t.Total,
 		Link:              t.Link,
 		TransactionStatus: t.TransactionStatus,
 		FraudStatus:       t.FraudStatus,

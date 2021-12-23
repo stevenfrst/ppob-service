@@ -1,13 +1,23 @@
 package product
 
+import (
+	"gorm.io/gorm"
+	"ppob-service/drivers/repository/transaction"
+	"time"
+)
+
 type Domain struct {
-	ID          uint
+	ID          uint `gorm:"primarykey"`
 	Name        string
 	Description string
 	Category    string
+	Transaction []transaction.DetailTransaction
 	Price       int
 	Stocks      int
-	Discount    int
+	Tax         int
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	DeletedAt   gorm.DeletedAt `gorm:"index"`
 }
 
 type IProductUsecase interface {

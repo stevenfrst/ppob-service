@@ -22,8 +22,7 @@ func (t *UseCase) CreateTransaction(productID, userID, nominal int, bank string)
 
 	transaction.ID = uint(resp.ID)
 	transaction.UserID = uint(userID)
-	transaction.ProductID = uint(productID)
-	transaction.Nominal = nominal
+	transaction.Total = nominal
 	transaction.TransactionStatus = "pending"
 	transaction.FraudStatus = "accept"
 	transaction.PaymentType = resp.Provider

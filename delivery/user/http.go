@@ -111,6 +111,7 @@ func (d *UserDelivery) ChangePassword(c echo.Context) error {
 	}
 
 	id := jwtGetID.ID
+	log.Println(id)
 	res, err := d.usecase.ChangePassword(id, user.OldPassword, user.NewPassword)
 	if err != nil {
 		return delivery.ErrorResponse(c, http.StatusInternalServerError, "Internal Error", err)

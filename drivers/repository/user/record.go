@@ -14,7 +14,7 @@ type User struct {
 	Password     string
 	Email        string
 	PhoneNumber  string
-	Pin          int
+	IsVerified   bool
 	Transactions []transaction.Transaction
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
@@ -29,7 +29,7 @@ func (u *User) ToDomain() user.Domain {
 		Password:    u.Password,
 		Email:       u.Email,
 		PhoneNumber: u.PhoneNumber,
-		Pin:         u.Pin,
+		IsVerified:  u.IsVerified,
 	}
 }
 
@@ -41,6 +41,6 @@ func FromDomain(domain *user.Domain) *User {
 		Password:    domain.Password,
 		Email:       domain.Email,
 		PhoneNumber: domain.PhoneNumber,
-		Pin:         domain.Pin,
+		IsVerified:  domain.IsVerified,
 	}
 }

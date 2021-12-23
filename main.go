@@ -45,28 +45,28 @@ func dbMigrate(db *gorm.DB) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	var users = []userRepo.User{{ID: 1, Role: "admin", Username: "admin", Password: encryptMigration("admin"), Email: "admin@admin.com", PhoneNumber: "082135166117", Pin: 1234},
-		{ID: 2, Role: "user", Username: "kuli", Password: "kuli", Email: "kuli@user.com", PhoneNumber: "0821313123", Pin: 1234},
-		{ID: 3, Role: "user", Username: "kuli2", Password: "kuli2", Email: "kuli2@user.com", PhoneNumber: "0831231299", Pin: 1234},
+	var users = []userRepo.User{{ID: 1, Role: "admin", Username: "admin", Password: encryptMigration("admin"), Email: "admin@admin.com", PhoneNumber: "082135166117"},
+		{ID: 2, Role: "user", Username: "kuli", Password: "kuli", Email: "kuli@user.com", PhoneNumber: "0821313123"},
+		{ID: 3, Role: "user", Username: "kuli2", Password: "kuli2", Email: "kuli2@user.com", PhoneNumber: "0831231299"},
 	}
 	db.Create(&users)
-	var category = []productRepo.Category{{ID: 1, Name: "Pulsa"},
-		{ID: 2, Name: "Voucher Restoran"},
-		{ID: 3, Name: "Tagihan PLN"},
+	var category = []productRepo.Category{{ID: 1, Name: "Pulsa",Tax: 10},
+		{ID: 2, Name: "Voucher Restoran",Tax: 5},
+		{ID: 3, Name: "Tagihan PLN",Tax: 10},
 	}
 	db.Create(&category)
-	var products = []productRepo.Product{{ID: 1, Name: "Pulsa Telkomsel 10K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 10000, Stocks: 50, Discount: 0, Sold: 6},
-		{ID: 2, Name: "Pulsa Telkomsel 20K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 20000, Stocks: 50, Discount: 0, Sold: 3},
-		{ID: 3, Name: "Pulsa Telkomsel 25K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 25000, Stocks: 50, Discount: 0, Sold: 10},
-		{ID: 4, Name: "Pulsa Telkomsel 50K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 50000, Stocks: 50, Discount: 0, Sold: 99},
-		{ID: 5, Name: "Pulsa Telkomsel 100K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 100000, Stocks: 50, Discount: 0, Sold: 1},
-		{ID: 6, Name: "Voucher KFC 100K", Description: "Voucher Restoran", CategoryID: 2, Price: 100000, Stocks: 50, Discount: 0, Sold: 123},
-		{ID: 7, Name: "Voucher KFC 200K", Description: "Voucher Restoran", CategoryID: 2, Price: 200000, Stocks: 50, Discount: 0, Sold: 90},
-		{ID: 8, Name: "Voucher ANU 50K", Description: "Voucher Restoran", CategoryID: 2, Price: 50000, Stocks: 50, Discount: 0, Sold: 12},
-		{ID: 9, Name: "Voucher ANU 100K", Description: "Voucher Restoran", CategoryID: 2, Price: 100000, Stocks: 50, Discount: 0, Sold: 43},
-		{ID: 10, Name: "Tagihan PLN 100K", Description: "Voucher Restoran", CategoryID: 3, Price: 100000, Stocks: int(math.Inf(1)), Discount: 0},
-		{ID: 11, Name: "Tagihan PLN 200K", Description: "Voucher Restoran", CategoryID: 3, Price: 200000, Stocks: int(math.Inf(1)), Discount: 0},
-		{ID: 12, Name: "Tagihan PLN 300K", Description: "Voucher Restoran", CategoryID: 3, Price: 300000, Stocks: int(math.Inf(1)), Discount: 0},
+	var products = []productRepo.Product{{ID: 1, Name: "Pulsa Telkomsel 10K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 10000, Stocks: 50, Sold: 6},
+		{ID: 2, Name: "Pulsa Telkomsel 20K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 20000, Stocks: 50, Sold: 3},
+		{ID: 3, Name: "Pulsa Telkomsel 25K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 25000, Stocks: 50, Sold: 10},
+		{ID: 4, Name: "Pulsa Telkomsel 50K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 50000, Stocks: 50, Sold: 99},
+		{ID: 5, Name: "Pulsa Telkomsel 100K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 100000, Stocks: 50, Sold: 1},
+		{ID: 6, Name: "Voucher KFC 100K", Description: "Voucher Restoran", CategoryID: 2, Price: 100000, Stocks: 50, Sold: 123},
+		{ID: 7, Name: "Voucher KFC 200K", Description: "Voucher Restoran", CategoryID: 2, Price: 200000, Stocks: 50, Sold: 90},
+		{ID: 8, Name: "Voucher ANU 50K", Description: "Voucher Restoran", CategoryID: 2, Price: 50000, Stocks: 50, Sold: 12},
+		{ID: 9, Name: "Voucher ANU 100K", Description: "Voucher Restoran", CategoryID: 2, Price: 100000, Stocks: 50, Sold: 43},
+		{ID: 10, Name: "Tagihan PLN 100K", Description: "Voucher Restoran", CategoryID: 3, Price: 100000, Stocks: int(math.Inf(1))},
+		{ID: 11, Name: "Tagihan PLN 200K", Description: "Voucher Restoran", CategoryID: 3, Price: 200000, Stocks: int(math.Inf(1))},
+		{ID: 12, Name: "Tagihan PLN 300K", Description: "Voucher Restoran", CategoryID: 3, Price: 300000, Stocks: int(math.Inf(1))},
 	}
 	db.Create(&products)
 
@@ -111,7 +111,7 @@ func main() {
 	e := echo.New()
 	e.Validator = &CustomValidator{Validator: validator.New()}
 	e.Pre(middleware.RemoveTrailingSlash())
-	e.Use(middleware.Logger())
+	//e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
 
