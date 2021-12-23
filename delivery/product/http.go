@@ -21,8 +21,8 @@ func NewProductDelivery(uc product.IProductUsecase) *ProductDelivery {
 }
 
 // GetTagihanPLN godoc
-// @Summary Get Random PLN
-// @Description Get Random Tagihan PLN
+// @Summary Get Random Product
+// @Description Get Random Tagihan Product
 // @Tags Product
 // @Accept json
 // @Produce json

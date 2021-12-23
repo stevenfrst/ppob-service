@@ -96,12 +96,13 @@ func (p *ProductRepository) GetBestSellerCategory(id, item int) (product.Domain,
 		return product.Domain{}, err
 	}
 	//log.Println(rep,"++++++")
+	log.Println(repoModel)
 	return repoModel, err
 }
 
 func (p *ProductRepository) GetBestSellerCategorySQL(id int) ([]product.Domain, error) {
 	var repoModels []Product
-	err := p.db.Order("sold DESC").Where("category_id = ?", id).Find(&repoModels).Limit(5).Error
+	err := p.db.Preload("Category").Order("sold DESC").Where("category_id = ?", id).Find(&repoModels).Limit(5).Error
 	if err != nil {
 		return ToDomainList(repoModels), err
 	}

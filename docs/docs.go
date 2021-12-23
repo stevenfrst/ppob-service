@@ -178,7 +178,7 @@ var doc = `{
         },
         "/v1/product/pln": {
             "get": {
-                "description": "Get Random Tagihan PLN",
+                "description": "Get Random Tagihan Product",
                 "consumes": [
                     "application/json"
                 ],
@@ -188,7 +188,7 @@ var doc = `{
                 "tags": [
                     "Product"
                 ],
-                "summary": "Get Random PLN",
+                "summary": "Get Random Product",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -528,9 +528,6 @@ var doc = `{
             "properties": {
                 "description": {
                     "type": "string"
-                },
-                "discount": {
-                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"

@@ -8,7 +8,6 @@ type EditProduct struct {
 	Description string `json:"description" validate:"required"`
 	Price       int    `json:"price" validate:"required"`
 	Stocks      int    `json:"stocks" validate:"required"`
-	Tax         int    `json:"tax"`
 }
 
 func (edit EditProduct) ToDomain() product.Domain {
@@ -18,6 +17,5 @@ func (edit EditProduct) ToDomain() product.Domain {
 		Description: edit.Description,
 		Price:       edit.Price,
 		Stocks:      edit.Stocks,
-		Tax:         edit.Tax,
 	}
 }
