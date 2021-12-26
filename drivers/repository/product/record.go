@@ -38,7 +38,6 @@ type SubCategory struct {
 type Category struct {
 	ID        uint `gorm:"primarykey"`
 	Name      string
-	Tax       int
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`

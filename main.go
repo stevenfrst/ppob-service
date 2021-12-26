@@ -50,9 +50,9 @@ func dbMigrate(db *gorm.DB) {
 		{ID: 3, Role: "user", Username: "kuli2", Password: "kuli2", Email: "kuli2@user.com", PhoneNumber: "0831231299"},
 	}
 	db.Create(&users)
-	var category = []productRepo.Category{{ID: 1, Name: "Pulsa", Tax: 10},
-		{ID: 2, Name: "Voucher Restoran", Tax: 5},
-		{ID: 3, Name: "Tagihan PLN", Tax: 10},
+	var category = []productRepo.Category{{ID: 1, Name: "Pulsa"},
+		{ID: 2, Name: "Voucher Restoran"},
+		{ID: 3, Name: "Tagihan PLN"},
 	}
 	db.Create(&category)
 	var subcategory = []productRepo.SubCategory{

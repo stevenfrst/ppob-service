@@ -160,3 +160,31 @@ func (p *ProductRepository) EditSubCategory(sub product.SubCategory) error {
 	}
 	return nil
 }
+
+func (p *ProductRepository) CreateCategory(category product.Category) error {
+	var repoModels Category
+	repoModels.Name = category.Name
+	err := p.db.Create(&repoModels).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *ProductRepository) DeleteCategory(id int) error {
+	var repoModel Category
+	err := p.db.Where("id = ?", id).Delete(&repoModel).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *ProductRepository) DeleteSubCategory(id int) error {
+	var repoModel SubCategory
+	err := p.db.Where("id = ?", id).Delete(&repoModel).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}

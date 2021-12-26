@@ -91,3 +91,7 @@ func (p *ProductUsecase) GetAllSubCategory() []SubCategory {
 func (p *ProductUsecase) EditSubCategory(edit SubCategory) error {
 	return p.repo.EditSubCategory(edit)
 }
+
+func (p *ProductUsecase) CreateCategory(category Category) error {
+	return p.repo.CreateCategory(category)
+}

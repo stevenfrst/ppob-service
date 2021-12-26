@@ -201,7 +201,24 @@ func (p *ProductDelivery) EditSubCategory(c echo.Context) error {
 	}
 	err = p.usecase.EditSubCategory(deliveryModel.ToDomainSubCategory())
 	if err != nil {
-		return delivery.ErrorResponse(c,http.StatusInternalServerError,"error",err)
+		return delivery.ErrorResponse(c, http.StatusInternalServerError, "error", err)
+	}
+	return delivery.SuccessResponse(c, "success")
+}
+
+func (p *ProductDelivery) CreateCategory(c echo.Context) error {
+	var deliveryModel request.Category
+	err := c.Bind(&deliveryModel)
+	if err != nil {
+		return delivery.ErrorResponse(c, http.StatusBadRequest, "Failed to Bind Data", err)
+	}
+	err = c.Validate(&deliveryModel)
+	if err != nil {
+		return delivery.ErrorResponse(c, http.StatusBadRequest, "Required Data", err)
+	}
+	err = p.usecase.CreateCategory(deliveryModel.ToDomainCategory())
+	if err != nil {
+		return delivery.ErrorResponse(c,http.StatusInternalServerError, "failed to create category", err)
 	}
 	return delivery.SuccessResponse(c,"success")
 }
