@@ -16,7 +16,7 @@ type User struct {
 	PhoneNumber  string
 	IsVerified   bool
 	Transactions []transaction.Transaction
-	CreatedAt    time.Time
+	CreatedAt    *time.Time
 	UpdatedAt    time.Time
 	DeletedAt    gorm.DeletedAt `gorm:"index"`
 }

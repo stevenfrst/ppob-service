@@ -29,10 +29,12 @@ func (d RouteControllerList) RouteRegister(c *echo.Echo) {
 	c.GET("/v1/user", d.UserDelivery.GetDetail, jwt, RoleValidationUser())
 
 	//Product
+	c.POST("/v1/product",d.ProductDelivery.CreateProduct,jwt,RoleValidationAdmin())
 	c.GET("/v1/product/pln", d.ProductDelivery.GetTagihanPLN)
 	c.GET("/v1/product/:id", d.ProductDelivery.GetProduct)
 	c.PUT("/v1/product", d.ProductDelivery.EditProduct, jwt, RoleValidationAdmin())
 	c.DELETE("/v1/product/:id", d.ProductDelivery.DeleteProduct, jwt, RoleValidationAdmin())
+	c.GET("/v1/product/all",d.ProductDelivery.GetAllProducts)
 
 	c.GET("/v1/bestseller/:id", d.ProductDelivery.GetBestSellerCategory)
 

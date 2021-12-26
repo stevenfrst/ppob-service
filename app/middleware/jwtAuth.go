@@ -10,8 +10,9 @@ import (
 )
 
 type JwtCustomClaims struct {
-	ID   int    `json:"id"`
-	Role string `json:"role"`
+	ID         int    `json:"id"`
+	Role       string `json:"role"`
+	IsVerified bool   `json:"is_verified"`
 	jwt.StandardClaims
 }
 
@@ -30,10 +31,11 @@ func (jwtConf *ConfigJWT) Init() middleware.JWTConfig {
 	}
 }
 
-func (jwtConf *ConfigJWT) GenerateToken(userID int, role string) string {
+func (jwtConf *ConfigJWT) GenerateToken(userID int, role string, IsVerified bool) string {
 	claims := JwtCustomClaims{
 		userID,
 		role,
+		IsVerified,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * time.Duration(jwtConf.ExpiresDuration)).Unix(),
 		},

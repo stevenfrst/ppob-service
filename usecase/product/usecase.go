@@ -63,3 +63,19 @@ func (p *ProductUsecase) GetBestSellerCategory(id int) (resp []Domain, err error
 	}
 	return resp, nil
 }
+
+func (p *ProductUsecase) Create(domain CreateDomain) error {
+	err := p.repo.Create(domain)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *ProductUsecase) GetAll(offset,pageSize int) ([]Domain, error) {
+	resp,err := p.repo.GetAllProductPagination(offset,pageSize)
+	if err != nil {
+		return []Domain{},err
+	}
+	return resp,nil
+}

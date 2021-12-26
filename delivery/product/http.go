@@ -137,3 +137,42 @@ func (p *ProductDelivery) GetBestSellerCategory(c echo.Context) error {
 	}
 	return delivery.SuccessResponse(c, response.FromDomainList(resp))
 }
+
+func (p *ProductDelivery) CreateProduct(c echo.Context) error {
+	var deliveryModel request.CreateProduct
+	if err := c.Bind(&deliveryModel); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	if err := c.Validate(&deliveryModel); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	err := p.usecase.Create(deliveryModel.ToDomain())
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	return delivery.SuccessResponse(c, "success")
+}
+
+func (p *ProductDelivery) GetAllProducts(c echo.Context) error {
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page == 0 {
+		page = 1
+	}
+	pageSize, _ := strconv.Atoi(c.QueryParam("page_size"))
+	switch {
+	case pageSize > 100:
+		pageSize = 100
+	case pageSize <= 0:
+		pageSize = 10
+	}
+	offset := (page - 1) * pageSize
+
+	resp, err := p.usecase.GetAll(offset,pageSize)
+	if resp[0].ID == 0 {
+		return delivery.ErrorResponse(c,201,"Nil Data",nil)
+	} else if err != nil {
+		return delivery.ErrorResponse(c,http.StatusInternalServerError,"error",err)
+	}
+
+	return delivery.SuccessResponse(c,response.FromDomainList(resp))
+}

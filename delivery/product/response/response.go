@@ -10,6 +10,8 @@ type Product struct {
 	Price       int    `json:"price"`
 	Tax         int    `json:"tax"`
 	Stocks      int    `json:"stocks"`
+	SubCategory string `json:"sub_category"`
+	Link        string `json:"link"`
 }
 
 func FromDomain(domain product.Domain) Product {
@@ -21,6 +23,8 @@ func FromDomain(domain product.Domain) Product {
 		Price:       domain.Price,
 		Tax:         domain.Tax,
 		Stocks:      domain.Stocks,
+		SubCategory: domain.SubCategory,
+		Link:        domain.Link,
 	}
 }
 

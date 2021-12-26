@@ -8,18 +8,31 @@ import (
 )
 
 type Product struct {
-	ID          uint `gorm:"primarykey"`
-	Name        string
-	Description string
-	CategoryID  uint
-	Category    Category
-	Transaction []transaction.DetailTransaction
-	Price       int
-	Stocks      int
-	Sold        int
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	DeletedAt   gorm.DeletedAt `gorm:"index"`
+	ID            uint `gorm:"primarykey"`
+	Name          string
+	Description   string
+	CategoryID    uint
+	Category      Category
+	Transaction   []transaction.DetailTransaction
+	Price         int
+	Stocks        int
+	Sold          int
+	SubCategoryID uint
+	SubCategory SubCategory
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	DeletedAt     gorm.DeletedAt `gorm:"index"`
+}
+
+type SubCategory struct {
+	ID        uint `gorm:"primarykey"`
+	Name      string
+	Tax       int
+	ImageURL  string
+	//Product []Product
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
 type Category struct {
@@ -31,6 +44,18 @@ type Category struct {
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
+func FromDomain(domain product.CreateDomain) Product {
+	return Product{
+		ID:            domain.ID,
+		Name:          domain.Name,
+		Description:   domain.Description,
+		CategoryID:    domain.CategoryID,
+		Price:         domain.Price,
+		Stocks:        domain.Stocks,
+		SubCategoryID: domain.SubCategoryID,
+	}
+}
+
 func (p *Product) ToDomain() product.Domain {
 	return product.Domain{
 		ID:          p.ID,
@@ -40,6 +65,8 @@ func (p *Product) ToDomain() product.Domain {
 		Price:       p.Price,
 		Stocks:      p.Stocks,
 		Tax:         p.Category.Tax,
+		SubCategory: p.SubCategory.Name,
+		Link: p.SubCategory.ImageURL,
 	}
 }
 

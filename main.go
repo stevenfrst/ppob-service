@@ -41,7 +41,7 @@ func encryptMigration(password string) string {
 }
 
 func dbMigrate(db *gorm.DB) {
-	err := db.AutoMigrate(&productRepo.Category{}, &productRepo.Product{}, &userRepo.User{}, &transactionRepo.Transaction{})
+	err := db.AutoMigrate(&productRepo.Category{}, &productRepo.SubCategory{}, &productRepo.Product{}, &userRepo.User{}, &transactionRepo.Transaction{})
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -50,24 +50,78 @@ func dbMigrate(db *gorm.DB) {
 		{ID: 3, Role: "user", Username: "kuli2", Password: "kuli2", Email: "kuli2@user.com", PhoneNumber: "0831231299"},
 	}
 	db.Create(&users)
-	var category = []productRepo.Category{{ID: 1, Name: "Pulsa",Tax: 10},
-		{ID: 2, Name: "Voucher Restoran",Tax: 5},
-		{ID: 3, Name: "Tagihan PLN",Tax: 10},
+	var category = []productRepo.Category{{ID: 1, Name: "Pulsa", Tax: 10},
+		{ID: 2, Name: "Voucher Restoran", Tax: 5},
+		{ID: 3, Name: "Tagihan PLN", Tax: 10},
 	}
 	db.Create(&category)
-	var products = []productRepo.Product{{ID: 1, Name: "Pulsa Telkomsel 10K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 10000, Stocks: 50, Sold: 6},
-		{ID: 2, Name: "Pulsa Telkomsel 20K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 20000, Stocks: 50, Sold: 3},
-		{ID: 3, Name: "Pulsa Telkomsel 25K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 25000, Stocks: 50, Sold: 10},
-		{ID: 4, Name: "Pulsa Telkomsel 50K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 50000, Stocks: 50, Sold: 99},
-		{ID: 5, Name: "Pulsa Telkomsel 100K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 100000, Stocks: 50, Sold: 1},
-		{ID: 6, Name: "Voucher KFC 100K", Description: "Voucher Restoran", CategoryID: 2, Price: 100000, Stocks: 50, Sold: 123},
-		{ID: 7, Name: "Voucher KFC 200K", Description: "Voucher Restoran", CategoryID: 2, Price: 200000, Stocks: 50, Sold: 90},
-		{ID: 8, Name: "Voucher ANU 50K", Description: "Voucher Restoran", CategoryID: 2, Price: 50000, Stocks: 50, Sold: 12},
-		{ID: 9, Name: "Voucher ANU 100K", Description: "Voucher Restoran", CategoryID: 2, Price: 100000, Stocks: 50, Sold: 43},
-		{ID: 10, Name: "Tagihan PLN 100K", Description: "Voucher Restoran", CategoryID: 3, Price: 100000, Stocks: int(math.Inf(1))},
-		{ID: 11, Name: "Tagihan PLN 200K", Description: "Voucher Restoran", CategoryID: 3, Price: 200000, Stocks: int(math.Inf(1))},
-		{ID: 12, Name: "Tagihan PLN 300K", Description: "Voucher Restoran", CategoryID: 3, Price: 300000, Stocks: int(math.Inf(1))},
+	var subcategory = []productRepo.SubCategory{
+		{
+			ID:       1,
+			Name:     "Telkomsel",
+			Tax:      1000,
+			ImageURL: "",
+		},
+		{
+			ID:       2,
+			Name:     "Indosat",
+			Tax:      1000,
+			ImageURL: "",
+		},
+		{
+			ID:       3,
+			Name:     "Tri",
+			Tax:      1000,
+			ImageURL: "",
+		},
+		{
+			ID:       4,
+			Name:     "Xl",
+			Tax:      1000,
+			ImageURL: "",
+		},
+		{
+			ID:       5,
+			Name:     "KFC",
+			Tax:      1000,
+			ImageURL: "",
+		},
+		{
+			ID:       6,
+			Name:     "ANU",
+			Tax:      1000,
+			ImageURL: "",
+		},
+		{
+			ID:       7,
+			Name:     "PLN Prabayar",
+			Tax:      2500,
+			ImageURL: "",
+		},
+		{
+			ID:       8,
+			Name:     "PLN Token",
+			Tax:      1000,
+			ImageURL: "",
+		},
 	}
+	db.Create(&subcategory)
+	var products = []productRepo.Product{{ID: 1, Name: "Pulsa Telkomsel 10K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 10000, Stocks: 50, Sold: 6, SubCategoryID: 1},
+		{ID: 2, Name: "Pulsa Telkomsel 20K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 20000, Stocks: 50, Sold: 3, SubCategoryID: 1},
+		{ID: 3, Name: "Pulsa Telkomsel 25K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 25000, Stocks: 50, Sold: 10, SubCategoryID: 1},
+		{ID: 4, Name: "Pulsa Telkomsel 50K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 50000, Stocks: 50, Sold: 99, SubCategoryID: 1},
+		{ID: 5, Name: "Pulsa Telkomsel 100K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 100000, Stocks: 50, Sold: 1, SubCategoryID: 1},
+		{ID: 6, Name: "Voucher KFC 100K", Description: "Voucher Restoran", CategoryID: 2, Price: 100000, Stocks: 50, Sold: 123, SubCategoryID: 5},
+		{ID: 7, Name: "Voucher KFC 200K", Description: "Voucher Restoran", CategoryID: 2, Price: 200000, Stocks: 50, Sold: 90, SubCategoryID: 5},
+		{ID: 8, Name: "Voucher ANU 50K", Description: "Voucher Restoran", CategoryID: 2, Price: 50000, Stocks: 50, Sold: 12, SubCategoryID: 6},
+		{ID: 9, Name: "Voucher ANU 100K", Description: "Voucher Restoran", CategoryID: 2, Price: 100000, Stocks: 50, Sold: 43, SubCategoryID: 6},
+		{ID: 10, Name: "Tagihan PLN 100K", Description: "Tagihan Listrik", CategoryID: 3, Price: 100000, Stocks: int(math.Inf(1)), SubCategoryID: 7},
+		{ID: 11, Name: "Tagihan PLN 200K", Description: "Tagihan Listrik", CategoryID: 3, Price: 200000, Stocks: int(math.Inf(1)), SubCategoryID: 7},
+		{ID: 12, Name: "Tagihan PLN 300K", Description: "Tagihan Listrik", CategoryID: 3, Price: 300000, Stocks: int(math.Inf(1)), SubCategoryID: 7},
+		{ID: 14, Name: "Tagihan PLN 400K", Description: "Tagihan Listrik", CategoryID: 3, Price: 400000, Stocks: int(math.Inf(1)), SubCategoryID: 7},
+	}
+	//var products = productRepo.Product{ID: 14, Name: "Tagihan PLN 400K", Description: "Tagihan Listrik", CategoryID: 3, Price: 400000, Stocks: int(math.Inf(1)), SubCategoryID: 7}
+
 	db.Create(&products)
 
 }

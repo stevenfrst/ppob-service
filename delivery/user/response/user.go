@@ -8,6 +8,7 @@ type User struct {
 	Email       string `json:"email"`
 	PhoneNumber string `json:"phoneNumber"`
 	Role        string `json:"role"`
+	IsVerified bool `json:"is_verified"`
 }
 
 type UserLogin struct {
@@ -30,5 +31,6 @@ func FromDomain(domain user.Domain) User {
 		Email:       domain.Email,
 		PhoneNumber: domain.PhoneNumber,
 		Role:        domain.Role,
+		IsVerified: domain.IsVerified,
 	}
 }
