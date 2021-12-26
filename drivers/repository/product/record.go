@@ -18,17 +18,17 @@ type Product struct {
 	Stocks        int
 	Sold          int
 	SubCategoryID uint
-	SubCategory SubCategory
+	SubCategory   SubCategory
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	DeletedAt     gorm.DeletedAt `gorm:"index"`
 }
 
 type SubCategory struct {
-	ID        uint `gorm:"primarykey"`
-	Name      string
-	Tax       int
-	ImageURL  string
+	ID       uint `gorm:"primarykey"`
+	Name     string
+	Tax      int
+	ImageURL string
 	//Product []Product
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -64,14 +64,44 @@ func (p *Product) ToDomain() product.Domain {
 		Category:    p.Category.Name,
 		Price:       p.Price,
 		Stocks:      p.Stocks,
-		Tax:         p.Category.Tax,
+		Tax:         p.SubCategory.Tax,
 		SubCategory: p.SubCategory.Name,
-		Link: p.SubCategory.ImageURL,
+		Link:        p.SubCategory.ImageURL,
 	}
 }
 
-type RedisProduct struct {
-	product []Product
+func (p *Category) ToDomain() product.Category {
+	return product.Category{
+		ID:   p.ID,
+		Name: p.Name,
+	}
+}
+
+func ToCategoryList(category []Category) []product.Category {
+	var dummyDomain []product.Category
+	for x := range category {
+		dummyProducts := category[x].ToDomain()
+		dummyDomain = append(dummyDomain, dummyProducts)
+	}
+	return dummyDomain
+}
+
+func (p *SubCategory) ToDomain() product.SubCategory {
+	return product.SubCategory{
+		ID:   p.ID,
+		Name: p.Name,
+		Tax:  p.Tax,
+		ImageURL: p.ImageURL,
+	}
+}
+
+func ToSubCategoryList(sub []SubCategory) []product.SubCategory {
+	var dummyDomain []product.SubCategory
+	for x := range sub {
+		dummyProducts := sub[x].ToDomain()
+		dummyDomain = append(dummyDomain, dummyProducts)
+	}
+	return dummyDomain
 }
 
 func ToDomainList(products []Product) []product.Domain {

@@ -22,6 +22,18 @@ type CreateDomain struct {
 	SubCategoryID uint
 }
 
+type Category struct {
+	ID   uint
+	Name string
+}
+
+type SubCategory struct {
+	ID       uint
+	Name     string
+	Tax      int
+	ImageURL string
+}
+
 type IProductUsecase interface {
 	GetTagihanPLN() (Domain, error)
 	GetProduct(id int) ([]Domain, error)
@@ -30,6 +42,9 @@ type IProductUsecase interface {
 	GetBestSellerCategory(id int) ([]Domain, error)
 	Create(domain CreateDomain) error
 	GetAll(offset, pageSize int) ([]Domain, error)
+	GetAllCategory() []Category
+	GetAllSubCategory() []SubCategory
+	EditSubCategory(edit SubCategory) error
 }
 
 type IProductRepository interface {
@@ -43,4 +58,7 @@ type IProductRepository interface {
 	Create(input CreateDomain) error
 	GetAllProduct() ([]Domain, error)
 	GetAllProductPagination(offset, pageSize int) ([]Domain, error)
+	GetAllCategory() []Category
+	GetAllSubCategory() []SubCategory
+	EditSubCategory(sub SubCategory) error
 }

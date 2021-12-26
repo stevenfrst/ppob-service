@@ -36,6 +36,11 @@ func (d RouteControllerList) RouteRegister(c *echo.Echo) {
 	c.DELETE("/v1/product/:id", d.ProductDelivery.DeleteProduct, jwt, RoleValidationAdmin())
 	c.GET("/v1/product/all",d.ProductDelivery.GetAllProducts)
 
+	// Categories
+	c.GET("/v1/category",d.ProductDelivery.GetCategory)
+	c.GET("/v1/subcategory",d.ProductDelivery.GetSubCategory)
+	c.PUT("/v1/subcategory",d.ProductDelivery.EditSubCategory,jwt,RoleValidationAdmin())
+
 	c.GET("/v1/bestseller/:id", d.ProductDelivery.GetBestSellerCategory)
 
 

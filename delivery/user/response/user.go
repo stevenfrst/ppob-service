@@ -14,12 +14,14 @@ type User struct {
 type UserLogin struct {
 	Token string `json:"token"`
 	Role  string `json:"role"`
+	IsVerified bool `json:"is_verified"`
 }
 
 func FromDomainUser(domain user.Domain) UserLogin {
 	return UserLogin{
 		Token: domain.Token,
 		Role:  domain.Role,
+		IsVerified: domain.IsVerified,
 	}
 }
 

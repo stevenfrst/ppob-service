@@ -72,10 +72,22 @@ func (p *ProductUsecase) Create(domain CreateDomain) error {
 	return nil
 }
 
-func (p *ProductUsecase) GetAll(offset,pageSize int) ([]Domain, error) {
-	resp,err := p.repo.GetAllProductPagination(offset,pageSize)
+func (p *ProductUsecase) GetAll(offset, pageSize int) ([]Domain, error) {
+	resp, err := p.repo.GetAllProductPagination(offset, pageSize)
 	if err != nil {
-		return []Domain{},err
+		return []Domain{}, err
 	}
-	return resp,nil
+	return resp, nil
+}
+
+func (p *ProductUsecase) GetAllCategory() []Category {
+	return p.repo.GetAllCategory()
+}
+
+func (p *ProductUsecase) GetAllSubCategory() []SubCategory {
+	return p.repo.GetAllSubCategory()
+}
+
+func (p *ProductUsecase) EditSubCategory(edit SubCategory) error {
+	return p.repo.EditSubCategory(edit)
 }

@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 	"log"
 	"math/rand"
+	"ppob-service/delivery/product/response"
 	"ppob-service/usecase/product"
 	"time"
 )
@@ -137,4 +138,25 @@ func (p *ProductRepository) GetAllProductPagination(offset, pageSize int) ([]pro
 		return ToDomainList([]Product{}), err
 	}
 	return ToDomainList(repoModels), nil
+}
+
+func (p *ProductRepository) GetAllCategory() []product.Category {
+	var repoModels []Category
+	p.db.Find(&repoModels)
+	return ToCategoryList(repoModels)
+}
+
+func (p *ProductRepository) GetAllSubCategory() []product.SubCategory {
+	var repoModels []SubCategory
+	p.db.Find(&repoModels)
+	return ToSubCategoryList(repoModels)
+}
+
+func (p *ProductRepository) EditSubCategory(sub product.SubCategory) error {
+	repoModels := response.FromSubDomainCategory(sub)
+	err := p.db.Save(&repoModels).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

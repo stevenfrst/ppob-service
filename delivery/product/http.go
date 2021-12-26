@@ -167,12 +167,41 @@ func (p *ProductDelivery) GetAllProducts(c echo.Context) error {
 	}
 	offset := (page - 1) * pageSize
 
-	resp, err := p.usecase.GetAll(offset,pageSize)
+	resp, err := p.usecase.GetAll(offset, pageSize)
 	if resp[0].ID == 0 {
-		return delivery.ErrorResponse(c,201,"Nil Data",nil)
+		return delivery.ErrorResponse(c, 204, "Nil Data", nil)
 	} else if err != nil {
-		return delivery.ErrorResponse(c,http.StatusInternalServerError,"error",err)
+		return delivery.ErrorResponse(c, http.StatusInternalServerError, "error", err)
 	}
 
-	return delivery.SuccessResponse(c,response.FromDomainList(resp))
+	return delivery.SuccessResponse(c, response.FromDomainList(resp))
+}
+
+func (p *ProductDelivery) GetCategory(c echo.Context) error {
+	resp := p.usecase.GetAllCategory()
+	if resp[0].ID == 0 {
+		return delivery.ErrorResponse(c, http.StatusNoContent, "nil", nil)
+	}
+	return delivery.SuccessResponse(c, response.FromDomainCategoryList(resp))
+}
+
+func (p *ProductDelivery) GetSubCategory(c echo.Context) error {
+	resp := p.usecase.GetAllSubCategory()
+	if resp[0].ID == 0 {
+		return delivery.ErrorResponse(c, http.StatusNoContent, "nil", nil)
+	}
+	return delivery.SuccessResponse(c, response.FromDomainSubCategoryList(resp))
+}
+
+func (p *ProductDelivery) EditSubCategory(c echo.Context) error {
+	var deliveryModel request.SubCategory
+	err := c.Bind(&deliveryModel)
+	if err != nil {
+		return delivery.ErrorResponse(c, http.StatusBadRequest, "Failed to Bind Data", err)
+	}
+	err = p.usecase.EditSubCategory(deliveryModel.ToDomainSubCategory())
+	if err != nil {
+		return delivery.ErrorResponse(c,http.StatusInternalServerError,"error",err)
+	}
+	return delivery.SuccessResponse(c,"success")
 }
