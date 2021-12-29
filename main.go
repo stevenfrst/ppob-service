@@ -13,6 +13,7 @@ import (
 	"ppob-service/app/routes"
 	productDelivery "ppob-service/delivery/product"
 	userDelivery "ppob-service/delivery/user"
+	"ppob-service/drivers/email"
 	"ppob-service/drivers/mysql"
 	cache "ppob-service/drivers/redis"
 	productRepo "ppob-service/drivers/repository/product"
@@ -148,6 +149,17 @@ func main() {
 		DB_Port:     getConfig.DB_PORT,
 		DB_Database: getConfig.DB_NAME,
 	}
+
+	gmail := email.SmtpConfig{
+		CONFIG_SMTP_HOST:       getConfig.CONFIG_SMTP_HOST,
+		CONFIG_SMTP_PORT:       getConfig.CONFIG_SMTP_PORT,
+		CONFIG_SMTP_AUTH_EMAIL: getConfig.CONFIG_SMTP_AUTH_EMAIL,
+		CONFIG_AUTH_PASSWORD:   getConfig.CONFIG_AUTH_PASSWORD,
+		CONFIG_SENDER_NAME:     getConfig.CONFIG_SENDER_NAME,
+	}
+
+	dialer := email.NewGmailConfig(gmail)
+
 	db := configdb.InitialDb()
 	dbMigrate(db)
 
@@ -170,8 +182,8 @@ func main() {
 	e.Use(middleware.CORS())
 
 	// User
-	userIRepo := userRepo.NewRepository(db)
-	userIUsecase := userUsecase.NewUseCase(userIRepo, &jwt)
+	userIRepo := userRepo.NewRepository(db,conn)
+	userIUsecase := userUsecase.NewUseCase(userIRepo, &jwt,*dialer)
 	userIDelivery := userDelivery.NewUserDelivery(userIUsecase)
 
 	// Product

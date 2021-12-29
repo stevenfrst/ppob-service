@@ -1,6 +1,7 @@
 package delivery
 
 import (
+	"errors"
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"log"
@@ -10,6 +11,7 @@ import (
 	"ppob-service/delivery/user/request"
 	"ppob-service/delivery/user/response"
 	"ppob-service/usecase/user"
+	"strconv"
 )
 
 type UserDelivery struct {
@@ -140,6 +142,33 @@ func (d *UserDelivery) GetDetail(c echo.Context) error {
 		return delivery.ErrorResponse(c, http.StatusInternalServerError, "Internal Error", err)
 	}
 	return delivery.SuccessResponse(c, response.FromDomain(resp))
+}
+
+func (d *UserDelivery) SendPin(c echo.Context) error {
+	jwtGetID := middleware.GetUser(c)
+	err := d.usecase.SendPin(jwtGetID.ID)
+	if err != nil {
+		return delivery.ErrorResponse(c, http.StatusInternalServerError, "Internal Error", err)
+	}
+	return delivery.SuccessResponse(c, "Success")
+}
+
+func (d *UserDelivery) VerifyUser(c echo.Context) error {
+	jwtGetID := middleware.GetUser(c)
+	pin, err := strconv.Atoi(c.Param("pin"))
+	if err != nil {
+		return delivery.ErrorResponse(c, http.StatusBadRequest, "error input", err)
+
+	}
+	err = d.usecase.Verify(jwtGetID.ID, pin)
+	notMatchErr := errors.New("not match")
+	if err != notMatchErr {
+		return delivery.SuccessResponse(c, "not match")
+	} else if err != nil {
+		return delivery.ErrorResponse(c, http.StatusInternalServerError, "internal error", err)
+	}
+	return delivery.SuccessResponse(c, "Verified")
+
 }
 
 func (d *UserDelivery) JWTTEST(c echo.Context) error {

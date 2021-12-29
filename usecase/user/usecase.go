@@ -2,18 +2,22 @@ package user
 
 import (
 	"errors"
+	"fmt"
+	"gopkg.in/gomail.v2"
 	_middleware "ppob-service/app/middleware"
 )
 
 type UseCase struct {
 	repo IUserRepository
 	jwt  *_middleware.ConfigJWT
+	mail gomail.Dialer
 }
 
-func NewUseCase(userRepo IUserRepository, configJWT *_middleware.ConfigJWT) IUserUsecase {
+func NewUseCase(userRepo IUserRepository, configJWT *_middleware.ConfigJWT, mail gomail.Dialer) IUserUsecase {
 	return &UseCase{
 		repo: userRepo,
 		jwt:  configJWT,
+		mail: mail,
 	}
 }
 
@@ -54,4 +58,59 @@ func (u *UseCase) GetCurrentUser(id int) (Domain, error) {
 		return Domain{}, err
 	}
 	return resp, nil
+}
+
+func (u *UseCase) Verify(id,pin int) error {
+	resp, err := u.repo.ReadPin(id)
+	if err != nil {
+		return err
+	}
+	if resp == pin {
+		err = u.repo.ChangeStatus(id)
+		if err != nil {
+			return err
+		}
+	} else {
+		return errors.New("not match")
+	}
+	return nil
+}
+func (u *UseCase) SendPin(id int) error {
+	// Get Email By ID
+	email, err := u.repo.GetEmail(uint(id))
+	if err != nil {
+		return err
+	}
+
+	// Save random to Redis
+	pin, err := u.repo.SavePinToRedis(id)
+	if err != nil {
+		return err
+	}
+	// Send Email
+	var mailDomain = EmailDriver{
+		Sender:  u.mail.Username,
+		ToEmail: email,
+		Subject: "Kode Verification Pin",
+	}
+	err = u.mail.DialAndSend(createHeader(mailDomain, pin))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func createHeader(s EmailDriver, pin string) *gomail.Message {
+	var bodyEmail string
+
+	bodyEmail = fmt.Sprintf("Pin Anda Untuk Konfimasi Email <b>%v<b>", pin)
+
+	mailer := gomail.NewMessage()
+	mailer.SetHeader("From", s.Sender)
+	mailer.SetHeader("To", s.ToEmail)
+	mailer.SetHeader("Subject", s.Subject)
+	mailer.SetBody("text/html", bodyEmail)
+
+	return mailer
 }

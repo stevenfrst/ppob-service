@@ -222,3 +222,30 @@ func (p *ProductDelivery) CreateCategory(c echo.Context) error {
 	}
 	return delivery.SuccessResponse(c,"success")
 }
+
+func (p *ProductDelivery) DeleteCategory(c echo.Context) error {
+	idParam, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return delivery.ErrorResponse(c, http.StatusBadRequest, "Wrong Params", err)
+	}
+	err = p.usecase.DeleteCategory(idParam)
+	if err != nil {
+		return delivery.ErrorResponse(c, http.StatusInternalServerError, "Internal error", err)
+	}
+
+	return delivery.SuccessResponse(c, "success")
+}
+
+
+func (p *ProductDelivery) DeleteSubCategory(c echo.Context) error {
+	idParam, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return delivery.ErrorResponse(c, http.StatusBadRequest, "Wrong Params", err)
+	}
+	err = p.usecase.DeleteSubCategory(idParam)
+	if err != nil {
+		return delivery.ErrorResponse(c, http.StatusInternalServerError, "Internal error", err)
+	}
+
+	return delivery.SuccessResponse(c, "success")
+}

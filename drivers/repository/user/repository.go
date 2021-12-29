@@ -1,19 +1,26 @@
 package user
 
 import (
+	"fmt"
+	"github.com/gomodule/redigo/redis"
 	"gorm.io/gorm"
 	"log"
+	"math/rand"
 	"ppob-service/helpers/encrypt"
 	"ppob-service/usecase/user"
+	"strconv"
+	"time"
 )
 
 type UserRepository struct {
-	db *gorm.DB
+	db    *gorm.DB
+	cache redis.Conn
 }
 
-func NewRepository(gormDb *gorm.DB) user.IUserRepository {
+func NewRepository(gormDb *gorm.DB, cache redis.Conn) user.IUserRepository {
 	return &UserRepository{
-		db: gormDb,
+		db:    gormDb,
+		cache: cache,
 	}
 }
 
@@ -87,4 +94,38 @@ func (r *UserRepository) DetailUser(id int) (user.Domain, error) {
 		return user.Domain{}, err
 	}
 	return userRepo.ToDomain(), nil
+}
+
+func (r *UserRepository) SavePinToRedis(id int) (string, error) {
+	rand.Seed(time.Now().UTC().UnixNano())
+	pin := rand.Intn(9999-1000) + 1000
+	toRedis := fmt.Sprintf("pin:%v", id)
+	_, err := r.cache.Do("SET", toRedis, pin)
+	if err != nil {
+		return "", err
+	}
+	return strconv.Itoa(pin), nil
+}
+
+func (r *UserRepository) ReadPin(id int) (int, error) {
+	pin, err := redis.Int(r.cache.Do("GET", fmt.Sprintf("pin:%v", id)))
+	if err != nil {
+		return 0, err
+	}
+	return pin, nil
+}
+
+func (r *UserRepository) ChangeStatus(id int) error {
+	var repoModel User
+	err := r.db.Where("id = ?", id).First(&repoModel).Error
+	if err != nil {
+		return err
+	}
+
+	repoModel.IsVerified = true
+	err = r.db.Save(&repoModel).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -46,6 +46,8 @@ type IProductUsecase interface {
 	GetAllSubCategory() []SubCategory
 	EditSubCategory(edit SubCategory) error
 	CreateCategory(category Category) error
+	DeleteCategory(id int) error
+	DeleteSubCategory(id int) error
 }
 
 type IProductRepository interface {

@@ -27,6 +27,8 @@ func (d RouteControllerList) RouteRegister(c *echo.Echo) {
 	c.POST("/v1/register", d.UserDelivery.Register)
 	c.POST("/v1/user/change", d.UserDelivery.ChangePassword, jwt, RoleValidationUser())
 	c.GET("/v1/user", d.UserDelivery.GetDetail, jwt, RoleValidationUser())
+	c.POST("/v1/user/pin",d.UserDelivery.SendPin,jwt,RoleValidationUser())
+	c.POST("/v1/user/verify/:pin",d.UserDelivery.VerifyUser,jwt,RoleValidationUser())
 
 	//Product
 	c.POST("/v1/product", d.ProductDelivery.CreateProduct, jwt, RoleValidationAdmin())
@@ -41,6 +43,8 @@ func (d RouteControllerList) RouteRegister(c *echo.Echo) {
 	c.GET("/v1/subcategory", d.ProductDelivery.GetSubCategory)
 	c.PUT("/v1/subcategory", d.ProductDelivery.EditSubCategory, jwt, RoleValidationAdmin())
 	c.POST("/v1/category", d.ProductDelivery.CreateCategory, jwt, RoleValidationAdmin())
+	c.DELETE("/v1/category/:id",d.ProductDelivery.DeleteCategory,jwt, RoleValidationAdmin())
+	c.DELETE("/v1/subcategory/:id",d.ProductDelivery.DeleteSubCategory,jwt, RoleValidationAdmin())
 
 	c.GET("/v1/bestseller/:id", d.ProductDelivery.GetBestSellerCategory)
 

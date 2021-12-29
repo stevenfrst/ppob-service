@@ -95,3 +95,11 @@ func (p *ProductUsecase) EditSubCategory(edit SubCategory) error {
 func (p *ProductUsecase) CreateCategory(category Category) error {
 	return p.repo.CreateCategory(category)
 }
+
+func (p *ProductUsecase) DeleteCategory(id int) error {
+	return p.repo.DeleteCategory(id)
+}
+
+func (p *ProductUsecase) DeleteSubCategory(id int) error {
+	return p.repo.DeleteSubCategory(id)
+}
