@@ -25,6 +25,7 @@ func (d RouteControllerList) RouteRegister(c *echo.Echo) {
 	//User
 	c.POST("/v1/login", d.UserDelivery.Login)
 	c.POST("/v1/register", d.UserDelivery.Register)
+	c.POST("/v1/user/reset", d.UserDelivery.ResetPassword)
 	c.POST("/v1/user/change", d.UserDelivery.ChangePassword, jwt, RoleValidationUser())
 	c.GET("/v1/user", d.UserDelivery.GetDetail, jwt, RoleValidationUser())
 	c.POST("/v1/user/pin",d.UserDelivery.SendPin,jwt,RoleValidationUser())

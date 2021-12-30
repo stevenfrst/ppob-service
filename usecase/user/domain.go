@@ -24,6 +24,7 @@ type IUserUsecase interface {
 	GetCurrentUser(id int) (Domain, error)
 	SendPin(id int) error
 	Verify(id, pin int) error
+	ResetPassword(email string) error
 }
 
 type IUserRepository interface {
@@ -35,4 +36,5 @@ type IUserRepository interface {
 	SavePinToRedis(id int) (string, error)
 	ReadPin(id int) (int, error)
 	ChangeStatus(id int) error
+	ResetPassword(email, password string) error
 }

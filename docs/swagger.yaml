@@ -51,6 +51,28 @@ definitions:
             type: integer
         type: object
     type: object
+  request.Category:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  request.CreateProduct:
+    properties:
+      category_id:
+        type: integer
+      description:
+        type: string
+      name:
+        type: string
+      price:
+        type: integer
+      stocks:
+        type: integer
+      sub_category:
+        type: integer
+    type: object
   request.EditProduct:
     properties:
       description:
@@ -79,6 +101,17 @@ definitions:
         type: string
     required:
     - old_password
+    type: object
+  request.SubCategory:
+    properties:
+      id:
+        type: integer
+      image_url:
+        type: string
+      name:
+        type: string
+      tax:
+        type: integer
     type: object
   request.UserRegister:
     properties:
@@ -135,6 +168,91 @@ paths:
       summary: Get Best Seller
       tags:
       - Product
+  /v1/category:
+    get:
+      consumes:
+      - application/json
+      description: Get Random Tagihan Product
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/delivery.JSONSuccessResult'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/delivery.JSONBadReqResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/delivery.JSONInternalResult'
+      summary: Get all Product w pagination
+      tags:
+      - Category
+    post:
+      consumes:
+      - application/json
+      description: Edit Product via JSON
+      parameters:
+      - description: Product
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/request.Category'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/delivery.JSONSuccessResult'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/delivery.JSONBadReqResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/delivery.JSONInternalResult'
+      security:
+      - BearerAuth: []
+      summary: Create Product
+      tags:
+      - Category
+  /v1/category/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Product via ID
+      parameters:
+      - description: ID Category
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/delivery.JSONSuccessResult'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/delivery.JSONBadReqResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/delivery.JSONInternalResult'
+      security:
+      - BearerAuth: []
+      summary: Delete Product
+      tags:
+      - Category
   /v1/login:
     post:
       consumes:
@@ -172,6 +290,37 @@ paths:
       tags:
       - User
   /v1/product:
+    post:
+      consumes:
+      - application/json
+      description: Edit Product via JSON
+      parameters:
+      - description: Product
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateProduct'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/delivery.JSONSuccessResult'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/delivery.JSONBadReqResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/delivery.JSONInternalResult'
+      security:
+      - BearerAuth: []
+      summary: Create Product
+      tags:
+      - Product
     put:
       consumes:
       - application/json
@@ -262,6 +411,29 @@ paths:
       summary: GetProduct via Params
       tags:
       - Product
+  /v1/product/all:
+    get:
+      consumes:
+      - application/json
+      description: Get Random Tagihan Product
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/delivery.JSONSuccessResult'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/delivery.JSONBadReqResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/delivery.JSONInternalResult'
+      summary: Get all Product w pagination
+      tags:
+      - Product
   /v1/product/pln:
     get:
       consumes:
@@ -315,6 +487,91 @@ paths:
       summary: Register User to server
       tags:
       - User
+  /v1/subcategory:
+    get:
+      consumes:
+      - application/json
+      description: Get Random Tagihan Product
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/delivery.JSONSuccessResult'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/delivery.JSONBadReqResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/delivery.JSONInternalResult'
+      summary: Get all Product w pagination
+      tags:
+      - Category
+    put:
+      consumes:
+      - application/json
+      description: Edit subcategory via JSON
+      parameters:
+      - description: User Data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/request.SubCategory'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/delivery.JSONSuccessResult'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/delivery.JSONBadReqResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/delivery.JSONInternalResult'
+      security:
+      - BearerAuth: []
+      summary: Edit subcategory
+      tags:
+      - Category
+  /v1/subcategory/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Product via ID
+      parameters:
+      - description: ID Category
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/delivery.JSONSuccessResult'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/delivery.JSONBadReqResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/delivery.JSONInternalResult'
+      security:
+      - BearerAuth: []
+      summary: Delete Product
+      tags:
+      - Category
   /v1/user:
     get:
       consumes:

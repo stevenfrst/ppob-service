@@ -37,7 +37,6 @@ func (r *UserRepository) ChangePassword(id int, oldPassword, newPassword string)
 	//var userRepo User
 
 	email, err := r.GetEmail(uint(id))
-	log.Println("EMAIL", email)
 	if err != nil {
 		return "", err
 	}
@@ -61,7 +60,6 @@ func (r *UserRepository) ChangePassword(id int, oldPassword, newPassword string)
 
 func (r *UserRepository) CheckLogin(email, password string) (user.Domain, error) {
 	var userRepo User
-
 	err := r.db.Where("email = ?", email).First(&userRepo).Error
 	if err != nil {
 		return user.Domain{}, err
@@ -127,5 +125,22 @@ func (r *UserRepository) ChangeStatus(id int) error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func (r *UserRepository) ResetPassword(email, password string) error {
+	var repoModel User
+	err := r.db.Where("email = ?", email).First(&repoModel).Error
+	if err != nil {
+		return err
+	}
+	log.Println(repoModel.ID)
+	repoModel.Password, _ = encrypt.Hash(password)
+	err = r.db.Save(&repoModel).Error
+	if err != nil {
+		return err
+	}
+	log.Println(repoModel.Password)
+
 	return nil
 }

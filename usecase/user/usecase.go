@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gopkg.in/gomail.v2"
 	_middleware "ppob-service/app/middleware"
+	"ppob-service/helpers/random"
 )
 
 type UseCase struct {
@@ -60,7 +61,7 @@ func (u *UseCase) GetCurrentUser(id int) (Domain, error) {
 	return resp, nil
 }
 
-func (u *UseCase) Verify(id,pin int) error {
+func (u *UseCase) Verify(id, pin int) error {
 	resp, err := u.repo.ReadPin(id)
 	if err != nil {
 		return err
@@ -93,7 +94,11 @@ func (u *UseCase) SendPin(id int) error {
 		ToEmail: email,
 		Subject: "Kode Verification Pin",
 	}
-	err = u.mail.DialAndSend(createHeader(mailDomain, pin))
+
+	var bodyEmail string
+
+	bodyEmail = fmt.Sprintf("Pin Anda Untuk Konfimasi Email <b>%v<b>", pin)
+	err = u.mail.DialAndSend(createHeader(mailDomain, bodyEmail))
 	if err != nil {
 		return err
 	}
@@ -101,16 +106,35 @@ func (u *UseCase) SendPin(id int) error {
 	return nil
 }
 
-func createHeader(s EmailDriver, pin string) *gomail.Message {
+func (u *UseCase) ResetPassword(email string) error {
+	newPassword := random.String(10)
+
+	err := u.repo.ResetPassword(email, newPassword)
+	if err != nil {
+		return err
+	}
+
+	var mailDomain = EmailDriver{
+		Sender:  u.mail.Username,
+		ToEmail: email,
+		Subject: "Password Baru",
+	}
 	var bodyEmail string
 
-	bodyEmail = fmt.Sprintf("Pin Anda Untuk Konfimasi Email <b>%v<b>", pin)
+	bodyEmail = fmt.Sprintf("Password Baru Anda Adalah <b>%v<b> <br> Segera Mengganti Password Anda", newPassword)
+	err = u.mail.DialAndSend(createHeader(mailDomain, bodyEmail))
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
+func createHeader(s EmailDriver, header ...string) *gomail.Message {
 	mailer := gomail.NewMessage()
 	mailer.SetHeader("From", s.Sender)
 	mailer.SetHeader("To", s.ToEmail)
 	mailer.SetHeader("Subject", s.Subject)
-	mailer.SetBody("text/html", bodyEmail)
+	mailer.SetBody("text/html", header[0])
 
 	return mailer
 }

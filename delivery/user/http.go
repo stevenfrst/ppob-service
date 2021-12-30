@@ -171,6 +171,19 @@ func (d *UserDelivery) VerifyUser(c echo.Context) error {
 
 }
 
+func (d *UserDelivery) ResetPassword(c echo.Context) error {
+	var deliveryModel request.Reset
+	if err := c.Bind(&deliveryModel); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	err := d.usecase.ResetPassword(deliveryModel.Email)
+	if err != nil {
+		return delivery.ErrorResponse(c, http.StatusInternalServerError, "internal error", err)
+	}
+	return delivery.SuccessResponse(c,"success")
+}
+
 func (d *UserDelivery) JWTTEST(c echo.Context) error {
 	jwtGetID := middleware.GetUser(c)
 	log.Println(jwtGetID.Role)
