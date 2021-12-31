@@ -10,5 +10,8 @@
   "CONFIG_SMTP_PORT": 587,
   "CONFIG_SMTP_AUTH_EMAIL": "oppaidaisuki363@gmail.com",
   "CONFIG_AUTH_PASSWORD": "pxxjsamhtjkvaitb",
-  "CONFIG_SENDER_NAME" : "PT GACHAPITY HIHIHIHI <oppaidaisuki363@gmail.com>"
+  "CONFIG_SENDER_NAME" : "PT GACHAPITY HIHIHIHI <oppaidaisuki363@gmail.com>",
+  "STORAGE_URL" : "localhost:9000",
+  "STORAGE_ID" : "stevenhumam",
+  "STORAGE_SECRET" : "jambu123"
 }

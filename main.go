@@ -19,6 +19,7 @@ import (
 	productRepo "ppob-service/drivers/repository/product"
 	transactionRepo "ppob-service/drivers/repository/transaction"
 	userRepo "ppob-service/drivers/repository/user"
+	storagedriver "ppob-service/drivers/s3"
 	"ppob-service/helpers/encrypt"
 	productUsecase "ppob-service/usecase/product"
 	userUsecase "ppob-service/usecase/user"
@@ -174,6 +175,14 @@ func main() {
 	}
 	conn := configCache.InitRedis()
 
+	s3Config := storagedriver.MinioService{
+		Host:     getConfig.STORAGE_URL,
+		Username: getConfig.STORAGE_ID,
+		Secret:   getConfig.STORAGE_SECRET,
+	}
+
+	s3 := s3Config.NewClient()
+
 	e := echo.New()
 	e.Validator = &CustomValidator{Validator: validator.New()}
 	e.Pre(middleware.RemoveTrailingSlash())
@@ -182,13 +191,13 @@ func main() {
 	e.Use(middleware.CORS())
 
 	// User
-	userIRepo := userRepo.NewRepository(db,conn)
-	userIUsecase := userUsecase.NewUseCase(userIRepo, &jwt,*dialer)
+	userIRepo := userRepo.NewRepository(db, conn)
+	userIUsecase := userUsecase.NewUseCase(userIRepo, &jwt, *dialer)
 	userIDelivery := userDelivery.NewUserDelivery(userIUsecase)
 
 	// Product
 	productIrepo := productRepo.NewRepository(db, conn)
-	productIUsecase := productUsecase.NewUseCase(productIrepo)
+	productIUsecase := productUsecase.NewUseCase(productIrepo, s3, getConfig.STORAGE_URL)
 	productIdelivery := productDelivery.NewProductDelivery(productIUsecase)
 
 	routesInit := routes.RouteControllerList{

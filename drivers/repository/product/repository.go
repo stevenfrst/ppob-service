@@ -188,3 +188,12 @@ func (p *ProductRepository) DeleteSubCategory(id int) error {
 	}
 	return nil
 }
+
+func (p *ProductRepository) CreateSubCategory(domain product.SubCategory) error {
+	repoModel := FromDomainSubCategory(domain)
+	err := p.db.Create(&repoModel).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -42,7 +42,7 @@ func (r *UserRepository) ChangePassword(id int, oldPassword, newPassword string)
 	}
 
 	resp, err := r.CheckLogin(email, oldPassword)
-	log.Println(resp)
+	log.Println(resp, err)
 	if err != nil {
 		return "", err
 	}
@@ -64,9 +64,10 @@ func (r *UserRepository) CheckLogin(email, password string) (user.Domain, error)
 	if err != nil {
 		return user.Domain{}, err
 	}
+
 	err = encrypt.CheckPassword(password, userRepo.Password)
 	if err != nil {
-		return user.Domain{}, nil
+		return user.Domain{}, err
 	}
 	return userRepo.ToDomain(), nil
 }
@@ -75,10 +76,12 @@ func (r *UserRepository) Register(users *user.Domain) (string, error) {
 	userIn := FromDomain(users)
 	hashedPassword, err := encrypt.Hash(users.Password)
 	if err != nil {
+		log.Println(err, "HIT")
 		return "", err
 	}
 	userIn.Password = hashedPassword
 	err = r.db.Create(userIn).Error
+
 	if err != nil {
 		return "", err
 	}

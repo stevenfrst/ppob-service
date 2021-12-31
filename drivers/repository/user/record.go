@@ -12,7 +12,7 @@ type User struct {
 	Role         string
 	Username     string
 	Password     string
-	Email        string
+	Email        string `gorm:"unique"`
 	PhoneNumber  string
 	IsVerified   bool
 	Transactions []transaction.Transaction

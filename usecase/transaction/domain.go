@@ -30,8 +30,4 @@ type ITransactionUsecase interface {
 }
 
 type ITransactionRepository interface {
-	Create(input Domain) error
-	GetByID(ID int) (Domain, error)
-	Update(input Domain) error
-	GetByUserID(id int) ([]Domain, error)
 }

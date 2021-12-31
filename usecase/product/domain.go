@@ -48,6 +48,7 @@ type IProductUsecase interface {
 	CreateCategory(category Category) error
 	DeleteCategory(id int) error
 	DeleteSubCategory(id int) error
+	CreateSubCategory(sub SubCategory, objName string) error
 }
 
 type IProductRepository interface {
@@ -67,4 +68,5 @@ type IProductRepository interface {
 	CreateCategory(category Category) error
 	DeleteCategory(id int) error
 	DeleteSubCategory(id int) error
+	CreateSubCategory(domain SubCategory) error
 }

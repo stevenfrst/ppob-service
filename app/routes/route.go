@@ -46,6 +46,7 @@ func (d RouteControllerList) RouteRegister(c *echo.Echo) {
 	c.POST("/v1/category", d.ProductDelivery.CreateCategory, jwt, RoleValidationAdmin())
 	c.DELETE("/v1/category/:id",d.ProductDelivery.DeleteCategory,jwt, RoleValidationAdmin())
 	c.DELETE("/v1/subcategory/:id",d.ProductDelivery.DeleteSubCategory,jwt, RoleValidationAdmin())
+	c.POST("/v1/subcategory",d.ProductDelivery.CreateSubCategory)
 
 	c.GET("/v1/bestseller/:id", d.ProductDelivery.GetBestSellerCategory)
 

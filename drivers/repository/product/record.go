@@ -8,8 +8,8 @@ import (
 )
 
 type Product struct {
-	ID            uint `gorm:"primarykey"`
-	Name          string
+	ID            uint   `gorm:"primarykey"`
+	Name          string `gorm:"unique"`
 	Description   string
 	CategoryID    uint
 	Category      Category
@@ -85,11 +85,20 @@ func ToCategoryList(category []Category) []product.Category {
 	return dummyDomain
 }
 
+func FromDomainSubCategory(sub product.SubCategory) SubCategory {
+	return SubCategory{
+		ID:       sub.ID,
+		Name:     sub.Name,
+		Tax:      sub.Tax,
+		ImageURL: sub.ImageURL,
+	}
+}
+
 func (p *SubCategory) ToDomain() product.SubCategory {
 	return product.SubCategory{
-		ID:   p.ID,
-		Name: p.Name,
-		Tax:  p.Tax,
+		ID:       p.ID,
+		Name:     p.Name,
+		Tax:      p.Tax,
 		ImageURL: p.ImageURL,
 	}
 }

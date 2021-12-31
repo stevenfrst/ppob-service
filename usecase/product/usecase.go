@@ -1,17 +1,25 @@
 package product
 
 import (
+	"context"
+	"fmt"
+	"github.com/minio/minio-go/v7"
+	"log"
 	"math/rand"
 	"time"
 )
 
 type ProductUsecase struct {
 	repo IProductRepository
+	s3   *minio.Client
+	url  string
 }
 
-func NewUseCase(productRepo IProductRepository) IProductUsecase {
+func NewUseCase(productRepo IProductRepository, s3 *minio.Client, url string) IProductUsecase {
 	return &ProductUsecase{
 		repo: productRepo,
+		s3:   s3,
+		url:  url,
 	}
 }
 
@@ -102,4 +110,21 @@ func (p *ProductUsecase) DeleteCategory(id int) error {
 
 func (p *ProductUsecase) DeleteSubCategory(id int) error {
 	return p.repo.DeleteSubCategory(id)
+}
+
+func (p *ProductUsecase) CreateSubCategory(sub SubCategory, objName string) error {
+	if _, err := p.s3.FPutObject(context.Background(), "static", objName, sub.ImageURL, minio.PutObjectOptions{
+		ContentType: "image/png",
+	}); err != nil {
+		log.Println(err)
+		return err
+	}
+
+	sub.ImageURL = fmt.Sprintf("http://%v/static/%v", p.url, objName)
+	log.Println(sub.ImageURL)
+	err := p.repo.CreateSubCategory(sub)
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -3,8 +3,12 @@ package user
 import (
 	"errors"
 	"fmt"
+	"github.com/go-sql-driver/mysql"
+	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/gomail.v2"
+	"gorm.io/gorm"
 	_middleware "ppob-service/app/middleware"
+	"ppob-service/helpers/errorHelper"
 	"ppob-service/helpers/random"
 )
 
@@ -24,7 +28,10 @@ func NewUseCase(userRepo IUserRepository, configJWT *_middleware.ConfigJWT, mail
 
 func (u *UseCase) Login(username, password string) (Domain, error) {
 	user, err := u.repo.CheckLogin(username, password)
-	if user.ID == 0 {
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return Domain{}, errors.New("user not found")
+	} else if user.ID == 0 {
 		return Domain{}, errors.New("email/password not match")
 	} else if err != nil {
 		return user, errors.New("internal error")
@@ -37,7 +44,10 @@ func (u *UseCase) Login(username, password string) (Domain, error) {
 func (u *UseCase) Register(user Domain) (string, error) {
 	user.Role = "user"
 	resp, err := u.repo.Register(&user)
-	if err != nil {
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+		return "", errorHelper.OldPasswordNotMatch
+	} else if err != nil {
 		return "", errors.New("internal error")
 	}
 	return resp, err
@@ -45,8 +55,10 @@ func (u *UseCase) Register(user Domain) (string, error) {
 
 func (u *UseCase) ChangePassword(id int, oldPassword, newPassword string) (string, error) {
 	resp, err := u.repo.ChangePassword(id, oldPassword, newPassword)
-	if err != nil {
-		return "", nil
+	if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+		return "", errorHelper.OldPasswordNotMatch
+	} else if err != nil {
+		return "", err
 	} else if resp == "not found" {
 		return "User not found", nil
 	}

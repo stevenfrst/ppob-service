@@ -1,8 +1,12 @@
 package delivery
 
 import (
+	"fmt"
 	"github.com/labstack/echo/v4"
+	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
 	"ppob-service/delivery"
 	"ppob-service/delivery/product/request"
 	"ppob-service/delivery/product/response"
@@ -337,4 +341,50 @@ func (p *ProductDelivery) DeleteSubCategory(c echo.Context) error {
 	}
 
 	return delivery.SuccessResponse(c, "success")
+}
+
+func (p *ProductDelivery) CreateSubCategory(c echo.Context) error {
+	var deliveryModel = request.SubCategory{}
+	name := c.FormValue("name")
+	tax, err := strconv.Atoi(c.FormValue("tax"))
+	if err != nil {
+		return delivery.ErrorResponse(c, http.StatusBadRequest, "error input", err)
+	}
+	file, err := c.FormFile("file")
+	if err != nil {
+		return err
+	}
+	src, err := file.Open()
+	if err != nil {
+		return err
+	}
+	defer src.Close()
+
+	tempFile, err := ioutil.TempFile("temp", "*.png")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer tempFile.Close()
+
+	fileBytes, err := ioutil.ReadAll(src)
+	if err != nil {
+		fmt.Println(err)
+	}
+	tempFile.Write(fileBytes)
+
+	defer func() {
+		os.Remove(tempFile.Name())
+	}()
+
+	log.Println(tempFile.Name())
+
+	deliveryModel.Name = name
+	deliveryModel.Tax = tax
+	deliveryModel.ImageURL = tempFile.Name()
+
+	err = p.usecase.CreateSubCategory(deliveryModel.ToDomainSubCategory(), fmt.Sprintf("%v.png", name))
+	if err != nil {
+		return err
+	}
+	return nil
 }

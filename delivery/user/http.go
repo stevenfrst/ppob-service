@@ -10,6 +10,7 @@ import (
 	"ppob-service/delivery"
 	"ppob-service/delivery/user/request"
 	"ppob-service/delivery/user/response"
+	"ppob-service/helpers/errorHelper"
 	"ppob-service/usecase/user"
 	"strconv"
 )
@@ -48,6 +49,8 @@ func (d *UserDelivery) Register(c echo.Context) (err error) {
 		//return delivery.ErrorResponse(c,http.StatusInternalServerError,errorHelper.ERROR_USER_REGISTER,err)
 		if fmt.Sprintf("%v", err) == "failed to registering user" {
 			return delivery.ErrorResponse(c, http.StatusBadRequest, "error", err)
+		} else if errors.As(err, &errorHelper.DuplicateEmailRegister) {
+			return delivery.ErrorResponse(c, http.StatusBadRequest, "Duplicate Entry", err)
 		} else {
 			return delivery.ErrorResponse(c, http.StatusInternalServerError, "error", err)
 		}
@@ -79,7 +82,9 @@ func (d *UserDelivery) Login(c echo.Context) error {
 	}
 	res, err := d.usecase.Login(email, password)
 	if err != nil {
-		if fmt.Sprintf("%v", err) == "email/password not match" {
+		if fmt.Sprintf("%v", err) == "user not found" {
+			return delivery.ErrorResponse(c, http.StatusNoContent, "error", err)
+		} else if fmt.Sprintf("%v", err) == "email/password not match" {
 			return delivery.ErrorResponse(c, http.StatusUnauthorized, "error", err)
 		} else {
 			return delivery.ErrorResponse(c, http.StatusInternalServerError, "Internal Error", err)
@@ -115,7 +120,10 @@ func (d *UserDelivery) ChangePassword(c echo.Context) error {
 	id := jwtGetID.ID
 	log.Println(id)
 	res, err := d.usecase.ChangePassword(id, user.OldPassword, user.NewPassword)
-	if err != nil {
+
+	if errors.As(err, &errorHelper.OldPasswordNotMatch) {
+		return delivery.ErrorResponse(c, http.StatusBadRequest, "old password incorrect", err)
+	} else if err != nil {
 		return delivery.ErrorResponse(c, http.StatusInternalServerError, "Internal Error", err)
 	} else if res == "user not found" {
 		return delivery.ErrorResponse(c, http.StatusNoContent, "User not Found", nil)
@@ -181,7 +189,7 @@ func (d *UserDelivery) ResetPassword(c echo.Context) error {
 	if err != nil {
 		return delivery.ErrorResponse(c, http.StatusInternalServerError, "internal error", err)
 	}
-	return delivery.SuccessResponse(c,"success")
+	return delivery.SuccessResponse(c, "success")
 }
 
 func (d *UserDelivery) JWTTEST(c echo.Context) error {
