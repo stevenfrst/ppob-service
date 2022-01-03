@@ -19,10 +19,12 @@ import (
 	productRepo "ppob-service/drivers/repository/product"
 	transactionRepo "ppob-service/drivers/repository/transaction"
 	userRepo "ppob-service/drivers/repository/user"
+	voucherRepo "ppob-service/drivers/repository/voucher"
 	storagedriver "ppob-service/drivers/s3"
 	"ppob-service/helpers/encrypt"
 	productUsecase "ppob-service/usecase/product"
 	userUsecase "ppob-service/usecase/user"
+	"time"
 )
 
 type CustomValidator struct {
@@ -43,10 +45,19 @@ func encryptMigration(password string) string {
 }
 
 func dbMigrate(db *gorm.DB) {
-	err := db.AutoMigrate(&productRepo.Category{}, &productRepo.SubCategory{}, &productRepo.Product{}, &userRepo.User{}, &transactionRepo.Transaction{})
+	err := db.AutoMigrate(&voucherRepo.Voucher{}, &productRepo.Category{}, &productRepo.SubCategory{}, &productRepo.Product{}, &userRepo.User{}, &transactionRepo.Transaction{})
 	if err != nil {
 		log.Fatalln(err)
 	}
+	dummyParse, _ := time.Parse(time.RFC822, "19")
+	log.Println(dummyParse)
+	var voucher = voucherRepo.Voucher{
+		ID:    1,
+		Code:  "GESEKGESEK",
+		Value: 10000,
+		Valid: dummyParse,
+	}
+	db.Create(&voucher)
 	var users = []userRepo.User{{ID: 1, Role: "admin", Username: "admin", Password: encryptMigration("admin"), Email: "admin@admin.com", PhoneNumber: "082135166117"},
 		{ID: 2, Role: "user", Username: "kuli", Password: "kuli", Email: "kuli@user.com", PhoneNumber: "0821313123"},
 		{ID: 3, Role: "user", Username: "kuli2", Password: "kuli2", Email: "kuli2@user.com", PhoneNumber: "0831231299"},
