@@ -6,13 +6,21 @@ import (
 )
 
 type Configuration struct {
-	DB_USERNAME string
-	DB_PASSWORD string
-	DB_PORT string
-	DB_HOST string
-	DB_NAME string
-	JWT_SECRET string
-	JWT_EXPIRED int
+	DB_USERNAME            string
+	DB_PASSWORD            string
+	DB_PORT                string
+	DB_HOST                string
+	DB_NAME                string
+	JWT_SECRET             string
+	JWT_EXPIRED            int
+	CONFIG_SMTP_HOST       string
+	CONFIG_SMTP_PORT       int
+	CONFIG_SMTP_AUTH_EMAIL string
+	CONFIG_AUTH_PASSWORD   string
+	CONFIG_SENDER_NAME     string
+	STORAGE_URL            string
+	STORAGE_ID             string
+	STORAGE_SECRET         string
 }
 
 func GetConfig() Configuration {

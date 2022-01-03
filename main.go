@@ -13,14 +13,18 @@ import (
 	"ppob-service/app/routes"
 	productDelivery "ppob-service/delivery/product"
 	userDelivery "ppob-service/delivery/user"
+	"ppob-service/drivers/email"
 	"ppob-service/drivers/mysql"
 	cache "ppob-service/drivers/redis"
 	productRepo "ppob-service/drivers/repository/product"
 	transactionRepo "ppob-service/drivers/repository/transaction"
 	userRepo "ppob-service/drivers/repository/user"
+	voucherRepo "ppob-service/drivers/repository/voucher"
+	storagedriver "ppob-service/drivers/s3"
 	"ppob-service/helpers/encrypt"
 	productUsecase "ppob-service/usecase/product"
 	userUsecase "ppob-service/usecase/user"
+	"time"
 )
 
 type CustomValidator struct {
@@ -41,13 +45,22 @@ func encryptMigration(password string) string {
 }
 
 func dbMigrate(db *gorm.DB) {
-	err := db.AutoMigrate(&productRepo.Category{}, &productRepo.Product{}, &userRepo.User{}, &transactionRepo.Transaction{})
+	err := db.AutoMigrate(&voucherRepo.Voucher{}, &productRepo.Category{}, &productRepo.SubCategory{}, &productRepo.Product{}, &userRepo.User{}, &transactionRepo.Transaction{})
 	if err != nil {
 		log.Fatalln(err)
 	}
-	var users = []userRepo.User{{ID: 1, Role: "admin", Username: "admin", Password: encryptMigration("admin"), Email: "admin@admin.com", PhoneNumber: "082135166117", Pin: 1234},
-		{ID: 2, Role: "user", Username: "kuli", Password: "kuli", Email: "kuli@user.com", PhoneNumber: "0821313123", Pin: 1234},
-		{ID: 3, Role: "user", Username: "kuli2", Password: "kuli2", Email: "kuli2@user.com", PhoneNumber: "0831231299", Pin: 1234},
+	dummyParse, _ := time.Parse(time.RFC822, "19")
+	log.Println(dummyParse)
+	var voucher = voucherRepo.Voucher{
+		ID:    1,
+		Code:  "GESEKGESEK",
+		Value: 10000,
+		Valid: dummyParse,
+	}
+	db.Create(&voucher)
+	var users = []userRepo.User{{ID: 1, Role: "admin", Username: "admin", Password: encryptMigration("admin"), Email: "admin@admin.com", PhoneNumber: "082135166117"},
+		{ID: 2, Role: "user", Username: "kuli", Password: "kuli", Email: "kuli@user.com", PhoneNumber: "0821313123"},
+		{ID: 3, Role: "user", Username: "kuli2", Password: "kuli2", Email: "kuli2@user.com", PhoneNumber: "0831231299"},
 	}
 	db.Create(&users)
 	var category = []productRepo.Category{{ID: 1, Name: "Pulsa"},
@@ -55,19 +68,73 @@ func dbMigrate(db *gorm.DB) {
 		{ID: 3, Name: "Tagihan PLN"},
 	}
 	db.Create(&category)
-	var products = []productRepo.Product{{ID: 1, Name: "Pulsa Telkomsel 10K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 10000, Stocks: 50, Discount: 0, Sold: 6},
-		{ID: 2, Name: "Pulsa Telkomsel 20K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 20000, Stocks: 50, Discount: 0, Sold: 3},
-		{ID: 3, Name: "Pulsa Telkomsel 25K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 25000, Stocks: 50, Discount: 0, Sold: 10},
-		{ID: 4, Name: "Pulsa Telkomsel 50K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 50000, Stocks: 50, Discount: 0, Sold: 99},
-		{ID: 5, Name: "Pulsa Telkomsel 100K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 100000, Stocks: 50, Discount: 0, Sold: 1},
-		{ID: 6, Name: "Voucher KFC 100K", Description: "Voucher Restoran", CategoryID: 2, Price: 100000, Stocks: 50, Discount: 0, Sold: 123},
-		{ID: 7, Name: "Voucher KFC 200K", Description: "Voucher Restoran", CategoryID: 2, Price: 200000, Stocks: 50, Discount: 0, Sold: 90},
-		{ID: 8, Name: "Voucher ANU 50K", Description: "Voucher Restoran", CategoryID: 2, Price: 50000, Stocks: 50, Discount: 0, Sold: 12},
-		{ID: 9, Name: "Voucher ANU 100K", Description: "Voucher Restoran", CategoryID: 2, Price: 100000, Stocks: 50, Discount: 0, Sold: 43},
-		{ID: 10, Name: "Tagihan PLN 100K", Description: "Voucher Restoran", CategoryID: 3, Price: 100000, Stocks: int(math.Inf(1)), Discount: 0},
-		{ID: 11, Name: "Tagihan PLN 200K", Description: "Voucher Restoran", CategoryID: 3, Price: 200000, Stocks: int(math.Inf(1)), Discount: 0},
-		{ID: 12, Name: "Tagihan PLN 300K", Description: "Voucher Restoran", CategoryID: 3, Price: 300000, Stocks: int(math.Inf(1)), Discount: 0},
+	var subcategory = []productRepo.SubCategory{
+		{
+			ID:       1,
+			Name:     "Telkomsel",
+			Tax:      1000,
+			ImageURL: "",
+		},
+		{
+			ID:       2,
+			Name:     "Indosat",
+			Tax:      1000,
+			ImageURL: "",
+		},
+		{
+			ID:       3,
+			Name:     "Tri",
+			Tax:      1000,
+			ImageURL: "",
+		},
+		{
+			ID:       4,
+			Name:     "Xl",
+			Tax:      1000,
+			ImageURL: "",
+		},
+		{
+			ID:       5,
+			Name:     "KFC",
+			Tax:      1000,
+			ImageURL: "",
+		},
+		{
+			ID:       6,
+			Name:     "ANU",
+			Tax:      1000,
+			ImageURL: "",
+		},
+		{
+			ID:       7,
+			Name:     "PLN Prabayar",
+			Tax:      2500,
+			ImageURL: "",
+		},
+		{
+			ID:       8,
+			Name:     "PLN Token",
+			Tax:      1000,
+			ImageURL: "",
+		},
 	}
+	db.Create(&subcategory)
+	var products = []productRepo.Product{{ID: 1, Name: "Pulsa Telkomsel 10K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 10000, Stocks: 50, Sold: 6, SubCategoryID: 1},
+		{ID: 2, Name: "Pulsa Telkomsel 20K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 20000, Stocks: 50, Sold: 3, SubCategoryID: 1},
+		{ID: 3, Name: "Pulsa Telkomsel 25K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 25000, Stocks: 50, Sold: 10, SubCategoryID: 1},
+		{ID: 4, Name: "Pulsa Telkomsel 50K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 50000, Stocks: 50, Sold: 99, SubCategoryID: 1},
+		{ID: 5, Name: "Pulsa Telkomsel 100K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 100000, Stocks: 50, Sold: 1, SubCategoryID: 1},
+		{ID: 6, Name: "Voucher KFC 100K", Description: "Voucher Restoran", CategoryID: 2, Price: 100000, Stocks: 50, Sold: 123, SubCategoryID: 5},
+		{ID: 7, Name: "Voucher KFC 200K", Description: "Voucher Restoran", CategoryID: 2, Price: 200000, Stocks: 50, Sold: 90, SubCategoryID: 5},
+		{ID: 8, Name: "Voucher ANU 50K", Description: "Voucher Restoran", CategoryID: 2, Price: 50000, Stocks: 50, Sold: 12, SubCategoryID: 6},
+		{ID: 9, Name: "Voucher ANU 100K", Description: "Voucher Restoran", CategoryID: 2, Price: 100000, Stocks: 50, Sold: 43, SubCategoryID: 6},
+		{ID: 10, Name: "Tagihan PLN 100K", Description: "Tagihan Listrik", CategoryID: 3, Price: 100000, Stocks: int(math.Inf(1)), SubCategoryID: 7},
+		{ID: 11, Name: "Tagihan PLN 200K", Description: "Tagihan Listrik", CategoryID: 3, Price: 200000, Stocks: int(math.Inf(1)), SubCategoryID: 7},
+		{ID: 12, Name: "Tagihan PLN 300K", Description: "Tagihan Listrik", CategoryID: 3, Price: 300000, Stocks: int(math.Inf(1)), SubCategoryID: 7},
+		{ID: 14, Name: "Tagihan PLN 400K", Description: "Tagihan Listrik", CategoryID: 3, Price: 400000, Stocks: int(math.Inf(1)), SubCategoryID: 7},
+	}
+	//var products = productRepo.Product{ID: 14, Name: "Tagihan PLN 400K", Description: "Tagihan Listrik", CategoryID: 3, Price: 400000, Stocks: int(math.Inf(1)), SubCategoryID: 7}
+
 	db.Create(&products)
 
 }
@@ -94,6 +161,17 @@ func main() {
 		DB_Port:     getConfig.DB_PORT,
 		DB_Database: getConfig.DB_NAME,
 	}
+
+	gmail := email.SmtpConfig{
+		CONFIG_SMTP_HOST:       getConfig.CONFIG_SMTP_HOST,
+		CONFIG_SMTP_PORT:       getConfig.CONFIG_SMTP_PORT,
+		CONFIG_SMTP_AUTH_EMAIL: getConfig.CONFIG_SMTP_AUTH_EMAIL,
+		CONFIG_AUTH_PASSWORD:   getConfig.CONFIG_AUTH_PASSWORD,
+		CONFIG_SENDER_NAME:     getConfig.CONFIG_SENDER_NAME,
+	}
+
+	dialer := email.NewGmailConfig(gmail)
+
 	db := configdb.InitialDb()
 	dbMigrate(db)
 
@@ -108,21 +186,29 @@ func main() {
 	}
 	conn := configCache.InitRedis()
 
+	s3Config := storagedriver.MinioService{
+		Host:     getConfig.STORAGE_URL,
+		Username: getConfig.STORAGE_ID,
+		Secret:   getConfig.STORAGE_SECRET,
+	}
+
+	s3 := s3Config.NewClient()
+
 	e := echo.New()
 	e.Validator = &CustomValidator{Validator: validator.New()}
 	e.Pre(middleware.RemoveTrailingSlash())
-	e.Use(middleware.Logger())
+	//e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
 
 	// User
-	userIRepo := userRepo.NewRepository(db)
-	userIUsecase := userUsecase.NewUseCase(userIRepo, &jwt)
+	userIRepo := userRepo.NewRepository(db, conn)
+	userIUsecase := userUsecase.NewUseCase(userIRepo, &jwt, *dialer)
 	userIDelivery := userDelivery.NewUserDelivery(userIUsecase)
 
 	// Product
 	productIrepo := productRepo.NewRepository(db, conn)
-	productIUsecase := productUsecase.NewUseCase(productIrepo)
+	productIUsecase := productUsecase.NewUseCase(productIrepo, s3, getConfig.STORAGE_URL)
 	productIdelivery := productDelivery.NewProductDelivery(productIUsecase)
 
 	routesInit := routes.RouteControllerList{
