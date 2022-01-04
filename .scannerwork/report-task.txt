@@ -1,0 +1,6 @@
+projectKey=ppob-service
+serverUrl=http://34.124.224.237:9001
+serverVersion=9.2.4.50792
+dashboardUrl=http://34.124.224.237:9001/dashboard?id=ppob-service
+ceTaskId=AX4irVkRxsM2UXKfjX3Z
+ceTaskUrl=http://34.124.224.237:9001/api/ce/task?id=AX4irVkRxsM2UXKfjX3Z

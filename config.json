@@ -1,8 +1,8 @@
 {
   "DB_USERNAME": "root",
-  "DB_PASSWORD": "root",
+  "DB_PASSWORD": "Jambu123",
   "DB_PORT": "3306",
-  "DB_HOST": "localhost",
+  "DB_HOST": "34.124.200.99",
   "DB_NAME": "ppob_dev",
   "JWT_SECRET" : "supersecret12345!@#$%",
   "JWT_EXPIRED": 72,

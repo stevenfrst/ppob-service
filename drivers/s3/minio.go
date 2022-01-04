@@ -11,7 +11,7 @@ type MinioService struct {
 	Username string
 	Secret   string
 }
-
+// NewClient create new client
 func (m *MinioService) NewClient() *minio.Client {
 	s3Client, err := minio.New(m.Host, &minio.Options{
 		//Creds:  credentials.NewStaticV4(m.Username, m.Secret, ""),
