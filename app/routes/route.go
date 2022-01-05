@@ -11,11 +11,13 @@ import (
 )
 import userDelivery "ppob-service/delivery/user"
 import productDelivery "ppob-service/delivery/product"
+import voucherDelivery "ppob-service/delivery/voucher"
 import _middleware "ppob-service/app/middleware"
 
 type RouteControllerList struct {
 	UserDelivery    userDelivery.UserDelivery
 	ProductDelivery productDelivery.ProductDelivery
+	VoucherDelivery voucherDelivery.VoucherDelivery
 	JWTConfig       middleware.JWTConfig
 }
 
@@ -47,6 +49,14 @@ func (d RouteControllerList) RouteRegister(c *echo.Echo) {
 	c.DELETE("/v1/category/:id",d.ProductDelivery.DeleteCategory,jwt, RoleValidationAdmin())
 	c.DELETE("/v1/subcategory/:id",d.ProductDelivery.DeleteSubCategory,jwt, RoleValidationAdmin())
 	c.POST("/v1/subcategory",d.ProductDelivery.CreateSubCategory)
+
+	// vouchers
+	c.POST("/v1/vouchers",d.VoucherDelivery.CreteVoucher,jwt,RoleValidationAdmin())
+	c.GET("/v1/vouchers/:id",d.VoucherDelivery.ReadByID)
+	c.GET("/v1/vouchers/all",d.VoucherDelivery.ReadAll)
+	c.DELETE("/v1/vouchers:id",d.VoucherDelivery.DeleteByID)
+	c.POST("/v1/vouchers/verify/:voucher",d.VoucherDelivery.Verify,jwt,RoleValidationUser())
+
 
 	c.GET("/v1/bestseller/:id", d.ProductDelivery.GetBestSellerCategory)
 

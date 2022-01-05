@@ -20,6 +20,8 @@ import (
 	transactionRepo "ppob-service/drivers/repository/transaction"
 	userRepo "ppob-service/drivers/repository/user"
 	voucherRepo "ppob-service/drivers/repository/voucher"
+	voucherUsecase "ppob-service/usecase/voucher"
+	voucherDelivery "ppob-service/delivery/voucher"
 	storagedriver "ppob-service/drivers/s3"
 	"ppob-service/helpers/encrypt"
 	productUsecase "ppob-service/usecase/product"
@@ -49,7 +51,7 @@ func dbMigrate(db *gorm.DB) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	dummyParse, _ := time.Parse(time.RFC822, "19")
+	dummyParse, _ := time.Parse(time.RFC3339, "2022-01-05T00:00:00.00+07:00")
 	log.Println(dummyParse)
 	var voucher = voucherRepo.Voucher{
 		ID:    1,
@@ -181,7 +183,7 @@ func main() {
 	}
 
 	configCache := cache.ConfigRedis{
-		DB_Host: "localhost",
+		DB_Host: "34.124.224.237",
 		DB_Port: "6379",
 	}
 	conn := configCache.InitRedis()
@@ -198,7 +200,7 @@ func main() {
 	e.Validator = &CustomValidator{Validator: validator.New()}
 	e.Pre(middleware.RemoveTrailingSlash())
 	//e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
+	//e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
 
 	// User
@@ -211,9 +213,16 @@ func main() {
 	productIUsecase := productUsecase.NewUseCase(productIrepo, s3, getConfig.STORAGE_URL)
 	productIdelivery := productDelivery.NewProductDelivery(productIUsecase)
 
+	// VoucherDelivery
+	voucherIRepo := voucherRepo.NewRepository(db)
+	voucherIUseCase := voucherUsecase.NewUseCase(voucherIRepo)
+	voucherIDelivery := voucherDelivery.NewProductDelivery(voucherIUseCase)
+
+
 	routesInit := routes.RouteControllerList{
 		UserDelivery:    *userIDelivery,
 		ProductDelivery: *productIdelivery,
+		VoucherDelivery: *voucherIDelivery,
 		JWTConfig:       jwt.Init(),
 	}
 
