@@ -26,7 +26,7 @@ type Product struct {
 
 type SubCategory struct {
 	ID       uint `gorm:"primarykey"`
-	Name     string
+	Name     string `gorm:"unique"`
 	Tax      int
 	ImageURL string
 	//Product []Product
@@ -37,7 +37,7 @@ type SubCategory struct {
 
 type Category struct {
 	ID        uint `gorm:"primarykey"`
-	Name      string
+	Name      string `gorm:"unique"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`

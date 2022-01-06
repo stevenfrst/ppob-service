@@ -20,7 +20,7 @@ func (u *VoucherUsecase) Create(voc Domain) error {
 	err := u.repo.Create(voc)
 	var mysqlErr *mysql.MySQLError
 	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
-		return errorHelper.DuplicateVoucher
+		return errorHelper.DuplicateData
 	} else if err != nil {
 		return err
 	}

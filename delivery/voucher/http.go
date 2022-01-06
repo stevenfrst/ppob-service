@@ -33,7 +33,7 @@ func (d *VoucherDelivery) CreteVoucher(c echo.Context) error {
 	//}
 	model := deliveryModel.ToDomain()
 	err := d.usecase.Create(model)
-	if errors.As(err, &errorHelper.DuplicateVoucher) {
+	if errors.As(err, &errorHelper.DuplicateData) {
 		return delivery.ErrorResponse(c, http.StatusBadRequest, "duplicate", err)
 	} else if err != nil {
 		return delivery.ErrorResponse(c, http.StatusInternalServerError, "errors", err)
@@ -81,9 +81,9 @@ func (d *VoucherDelivery) Verify(c echo.Context) error {
 	voucher := c.Param("voucher")
 	err := d.usecase.Verify(voucher)
 	if errors.As(err, &errorHelper.ErrVoucherNotMatch) {
-		return delivery.ErrorResponse(c,http.StatusBadRequest,"",err)
+		return delivery.ErrorResponse(c, http.StatusBadRequest, "", err)
 	} else if err != nil {
-		return delivery.ErrorResponse(c,http.StatusInternalServerError,"internal errors",err)
+		return delivery.ErrorResponse(c, http.StatusInternalServerError, "internal errors", err)
 	}
-	return delivery.SuccessResponse(c,"voucher match")
+	return delivery.SuccessResponse(c, "voucher match")
 }
