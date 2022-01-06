@@ -1,6 +1,7 @@
 package delivery
 
 import (
+	"errors"
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"io/ioutil"
@@ -10,6 +11,7 @@ import (
 	"ppob-service/delivery"
 	"ppob-service/delivery/product/request"
 	"ppob-service/delivery/product/response"
+	"ppob-service/helpers/errorHelper"
 	"ppob-service/usecase/product"
 	"strconv"
 )
@@ -59,7 +61,9 @@ func (p *ProductDelivery) GetProduct(c echo.Context) error {
 		return delivery.ErrorResponse(c, http.StatusInternalServerError, "Wrong Params", err)
 	}
 	resp, err := p.usecase.GetProduct(idParam)
-	if err != nil {
+	if errors.As(err, &errorHelper.ErrRecordNotFound) {
+		return delivery.ErrorResponse(c, http.StatusNoContent, "", err)
+	} else if err != nil {
 		return delivery.ErrorResponse(c, http.StatusInternalServerError, "", err)
 	}
 	return delivery.SuccessResponse(c, response.FromDomainList(resp))
@@ -163,7 +167,9 @@ func (p *ProductDelivery) CreateProduct(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	err := p.usecase.Create(deliveryModel.ToDomain())
-	if err != nil {
+	if errors.As(err, &errorHelper.DuplicateData){
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}else if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return delivery.SuccessResponse(c, "success")
@@ -287,7 +293,9 @@ func (p *ProductDelivery) CreateCategory(c echo.Context) error {
 		return delivery.ErrorResponse(c, http.StatusBadRequest, "Required Data", err)
 	}
 	err = p.usecase.CreateCategory(deliveryModel.ToDomainCategory())
-	if err != nil {
+	if errors.As(err,&errorHelper.DuplicateData){
+		return delivery.ErrorResponse(c,http.StatusBadRequest,"not found",err)
+	}else if err != nil {
 		return delivery.ErrorResponse(c, http.StatusInternalServerError, "failed to create category", err)
 	}
 	return delivery.SuccessResponse(c, "success")
@@ -383,8 +391,10 @@ func (p *ProductDelivery) CreateSubCategory(c echo.Context) error {
 	deliveryModel.ImageURL = tempFile.Name()
 
 	err = p.usecase.CreateSubCategory(deliveryModel.ToDomainSubCategory(), fmt.Sprintf("%v.png", name))
-	if err != nil {
-		return err
+	if errors.As(err,&errorHelper.DuplicateData) {
+		return delivery.ErrorResponse(c, http.StatusBadRequest, "", err)
+	} else if err != nil {
+		return delivery.ErrorResponse(c, http.StatusInternalServerError, "", err)
 	}
-	return nil
+	return delivery.SuccessResponse(c, "success")
 }

@@ -2,10 +2,13 @@ package product
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"github.com/go-sql-driver/mysql"
 	"github.com/minio/minio-go/v7"
 	"log"
 	"math/rand"
+	"ppob-service/helpers/errorHelper"
 	"time"
 )
 
@@ -36,7 +39,9 @@ func (p *ProductUsecase) GetTagihanPLN() (Domain, error) {
 
 func (p *ProductUsecase) GetProduct(id int) ([]Domain, error) {
 	resp, err := p.repo.GetProduct(id)
-	if err != nil {
+	if resp[0].ID == 0 {
+		return []Domain{}, errorHelper.ErrRecordNotFound
+	} else if err != nil {
 		return []Domain{}, err
 	}
 	return resp, nil
@@ -74,7 +79,10 @@ func (p *ProductUsecase) GetBestSellerCategory(id int) (resp []Domain, err error
 
 func (p *ProductUsecase) Create(domain CreateDomain) error {
 	err := p.repo.Create(domain)
-	if err != nil {
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+		return errorHelper.DuplicateData
+	} else if err != nil {
 		return err
 	}
 	return nil
@@ -101,7 +109,14 @@ func (p *ProductUsecase) EditSubCategory(edit SubCategory) error {
 }
 
 func (p *ProductUsecase) CreateCategory(category Category) error {
-	return p.repo.CreateCategory(category)
+	err := p.repo.CreateCategory(category)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+		return errorHelper.DuplicateData
+	} else if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (p *ProductUsecase) DeleteCategory(id int) error {
@@ -123,7 +138,10 @@ func (p *ProductUsecase) CreateSubCategory(sub SubCategory, objName string) erro
 	sub.ImageURL = fmt.Sprintf("http://%v/static/%v", p.url, objName)
 	log.Println(sub.ImageURL)
 	err := p.repo.CreateSubCategory(sub)
-	if err != nil {
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+		return errorHelper.DuplicateData
+	} else if err != nil {
 		return err
 	}
 	return nil
