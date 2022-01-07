@@ -12,13 +12,15 @@ import (
 import userDelivery "ppob-service/delivery/user"
 import productDelivery "ppob-service/delivery/product"
 import voucherDelivery "ppob-service/delivery/voucher"
+import txDelivery "ppob-service/delivery/transaction"
 import _middleware "ppob-service/app/middleware"
 
 type RouteControllerList struct {
-	UserDelivery    userDelivery.UserDelivery
-	ProductDelivery productDelivery.ProductDelivery
-	VoucherDelivery voucherDelivery.VoucherDelivery
-	JWTConfig       middleware.JWTConfig
+	UserDelivery        userDelivery.UserDelivery
+	ProductDelivery     productDelivery.ProductDelivery
+	VoucherDelivery     voucherDelivery.VoucherDelivery
+	TransactionDelivery txDelivery.TransactionDelivery
+	JWTConfig           middleware.JWTConfig
 }
 
 func (d RouteControllerList) RouteRegister(c *echo.Echo) {
@@ -30,8 +32,8 @@ func (d RouteControllerList) RouteRegister(c *echo.Echo) {
 	c.POST("/v1/user/reset", d.UserDelivery.ResetPassword)
 	c.POST("/v1/user/change", d.UserDelivery.ChangePassword, jwt, RoleValidationUser())
 	c.GET("/v1/user", d.UserDelivery.GetDetail, jwt, RoleValidationUser())
-	c.POST("/v1/user/pin",d.UserDelivery.SendPin,jwt,RoleValidationUser())
-	c.POST("/v1/user/verify/:pin",d.UserDelivery.VerifyUser,jwt,RoleValidationUser())
+	c.POST("/v1/user/pin", d.UserDelivery.SendPin, jwt, RoleValidationUser())
+	c.POST("/v1/user/verify/:pin", d.UserDelivery.VerifyUser, jwt, RoleValidationUser())
 
 	//Product
 	c.POST("/v1/product", d.ProductDelivery.CreateProduct, jwt, RoleValidationAdmin())
@@ -46,17 +48,20 @@ func (d RouteControllerList) RouteRegister(c *echo.Echo) {
 	c.GET("/v1/subcategory", d.ProductDelivery.GetSubCategory)
 	c.PUT("/v1/subcategory", d.ProductDelivery.EditSubCategory, jwt, RoleValidationAdmin())
 	c.POST("/v1/category", d.ProductDelivery.CreateCategory, jwt, RoleValidationAdmin())
-	c.DELETE("/v1/category/:id",d.ProductDelivery.DeleteCategory,jwt, RoleValidationAdmin())
-	c.DELETE("/v1/subcategory/:id",d.ProductDelivery.DeleteSubCategory,jwt, RoleValidationAdmin())
-	c.POST("/v1/subcategory",d.ProductDelivery.CreateSubCategory)
+	c.DELETE("/v1/category/:id", d.ProductDelivery.DeleteCategory, jwt, RoleValidationAdmin())
+	c.DELETE("/v1/subcategory/:id", d.ProductDelivery.DeleteSubCategory, jwt, RoleValidationAdmin())
+	c.POST("/v1/subcategory", d.ProductDelivery.CreateSubCategory)
 
 	// vouchers
-	c.POST("/v1/vouchers",d.VoucherDelivery.CreteVoucher,jwt,RoleValidationAdmin())
-	c.GET("/v1/vouchers/:id",d.VoucherDelivery.ReadByID)
-	c.GET("/v1/vouchers/all",d.VoucherDelivery.ReadAll)
-	c.DELETE("/v1/vouchers:id",d.VoucherDelivery.DeleteByID)
-	c.POST("/v1/vouchers/verify/:voucher",d.VoucherDelivery.Verify,jwt,RoleValidationUser())
+	c.POST("/v1/vouchers", d.VoucherDelivery.CreteVoucher, jwt, RoleValidationAdmin())
+	c.GET("/v1/vouchers/:id", d.VoucherDelivery.ReadByID)
+	c.GET("/v1/vouchers/all", d.VoucherDelivery.ReadAll)
+	c.DELETE("/v1/vouchers:id", d.VoucherDelivery.DeleteByID)
+	c.POST("/v1/vouchers/verify/:voucher", d.VoucherDelivery.Verify, jwt, RoleValidationUser())
 
+	// Transaction
+	c.POST("/v1/payment/va", d.TransactionDelivery.CreatePayment, jwt, RoleValidationUser())
+	c.POST("/v1/payment/notification", d.TransactionDelivery.GetNotification)
 
 	c.GET("/v1/bestseller/:id", d.ProductDelivery.GetBestSellerCategory)
 

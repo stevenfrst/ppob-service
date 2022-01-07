@@ -56,25 +56,21 @@ func (p *ConfigMidtrans) CreateVirtualAccount(userid, nominal int, bank string) 
 		},
 	}
 	res, _ := c.ChargeTransaction(chargeReq)
+	orderID, _ := strconv.Atoi(res.OrderID)
 	if bank == "permata" {
 		return CoreAPIResponse{
-			convertToInteger(res.PermataVaNumber),
-			res.ID,
+			orderID,
+			res.PermataVaNumber,
 			"permata",
 		}
 
 	}
 	getVaNum := res.VaNumbers[0].VANumber
 	return CoreAPIResponse{
-		convertToInteger(getVaNum),
-		res.ID,
+		orderID,
+		getVaNum,
 		res.VaNumbers[0].Bank,
 	}
-}
-
-func convertToInteger(str string) int {
-	out, _ := strconv.Atoi(str)
-	return out
 }
 
 func generateOrderIdSuffix() string {

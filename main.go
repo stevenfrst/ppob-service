@@ -12,20 +12,24 @@ import (
 	_middleware "ppob-service/app/middleware"
 	"ppob-service/app/routes"
 	productDelivery "ppob-service/delivery/product"
+	txDelivery "ppob-service/delivery/transaction"
 	userDelivery "ppob-service/delivery/user"
+	voucherDelivery "ppob-service/delivery/voucher"
 	"ppob-service/drivers/email"
+	payment "ppob-service/drivers/midtrans"
 	"ppob-service/drivers/mysql"
 	cache "ppob-service/drivers/redis"
 	productRepo "ppob-service/drivers/repository/product"
 	transactionRepo "ppob-service/drivers/repository/transaction"
+	txRepository "ppob-service/drivers/repository/transaction"
 	userRepo "ppob-service/drivers/repository/user"
 	voucherRepo "ppob-service/drivers/repository/voucher"
-	voucherUsecase "ppob-service/usecase/voucher"
-	voucherDelivery "ppob-service/delivery/voucher"
 	storagedriver "ppob-service/drivers/s3"
 	"ppob-service/helpers/encrypt"
 	productUsecase "ppob-service/usecase/product"
+	txUsecase "ppob-service/usecase/transaction"
 	userUsecase "ppob-service/usecase/user"
+	voucherUsecase "ppob-service/usecase/voucher"
 	"time"
 )
 
@@ -156,6 +160,13 @@ func dbMigrate(db *gorm.DB) {
 // @schemes http
 func main() {
 	getConfig := config.GetConfig()
+
+	configPayment := payment.ConfigMidtrans{
+		SERVER_KEY: getConfig.SERVER_KEY,
+	}
+	configPayment.SetupGlobalMidtransConfig()
+	payment.InitializeSnapClient()
+
 	configdb := mysql.ConfigDB{
 		DB_Username: getConfig.DB_USERNAME,
 		DB_Password: getConfig.DB_PASSWORD,
@@ -218,12 +229,17 @@ func main() {
 	voucherIUseCase := voucherUsecase.NewUseCase(voucherIRepo)
 	voucherIDelivery := voucherDelivery.NewProductDelivery(voucherIUseCase)
 
+	// Transaction
+	txIrepo := txRepository.NewRepository(db)
+	txIUseCase := txUsecase.NewUseCase(txIrepo, &configPayment, *dialer)
+	transactionDelivery := txDelivery.NewTransactionDelivery(txIUseCase)
 
 	routesInit := routes.RouteControllerList{
-		UserDelivery:    *userIDelivery,
-		ProductDelivery: *productIdelivery,
-		VoucherDelivery: *voucherIDelivery,
-		JWTConfig:       jwt.Init(),
+		UserDelivery:        *userIDelivery,
+		ProductDelivery:     *productIdelivery,
+		VoucherDelivery:     *voucherIDelivery,
+		TransactionDelivery: *transactionDelivery,
+		JWTConfig:           jwt.Init(),
 	}
 
 	routesInit.RouteRegister(e)
