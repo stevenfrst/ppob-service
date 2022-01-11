@@ -3,7 +3,6 @@ package transaction
 import (
 	"fmt"
 	"gopkg.in/gomail.v2"
-	"log"
 	payment "ppob-service/drivers/midtrans"
 	"ppob-service/helpers/errorHelper"
 	"strconv"
@@ -23,9 +22,38 @@ func NewUseCase(repo ITransactionRepository, payment payment.MidtransInterface, 
 	}
 }
 
+func (u *UseCase) GetAllTxUser(id int) ([]HistoryDomain, error) {
+	resp, err := u.repo.GetUserTxByID(id)
+	if resp[0].ID == 0 {
+		return []HistoryDomain{}, errorHelper.ErrRecordNotFound
+	} else if err != nil {
+		return []HistoryDomain{}, err
+	}
+
+	for x := range resp {
+		name, tax := u.repo.GetNameNTax(int(resp[x].ProductID))
+		resp[x].ProductName = name
+		resp[x].Tax = tax
+	}
+
+	return resp, nil
+}
+
+func (u *UseCase) GetTxByID(id int) (HistoryDomain, error) {
+	resp, err := u.repo.GetTxHistoryByID(id)
+	if resp.ID == 0 {
+		return HistoryDomain{}, errorHelper.ErrRecordNotFound
+	} else if err != nil {
+		return HistoryDomain{}, err
+	}
+	name, tax := u.repo.GetNameNTax(int(resp.ProductID))
+	resp.ProductName = name
+	resp.Tax = tax
+	return resp, nil
+}
+
 func (u *UseCase) ProcessNotification(input Notification) error {
 	txId, _ := strconv.Atoi(input.OrderID)
-	log.Println(input.OrderID)
 	tx, err := u.repo.GetTxByID(txId)
 	if tx.ID == 0 {
 		return errorHelper.ErrRecordNotFound
@@ -67,12 +95,11 @@ func (u *UseCase) GetVirtualAccount(id int, inVA CreateVA) (string, error) {
 		Discount:  inVA.Discount,
 		Subtotal:  inVA.Subtotal,
 	})
-	//log.Println(txDetailID)
 	if err != nil {
 		return "", err
 	}
 	total := inVA.Tax + inVA.Subtotal - inVA.Discount
-	//log.Println(total)
+
 	resp := u.payment.CreateVirtualAccount(id, total, inVA.Bank)
 
 	err = u.repo.CreateTx(Domain{

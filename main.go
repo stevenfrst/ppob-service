@@ -194,7 +194,7 @@ func main() {
 	}
 
 	configCache := cache.ConfigRedis{
-		DB_Host: "34.124.224.237",
+		DB_Host: getConfig.REDIS_URL,
 		DB_Port: "6379",
 	}
 	conn := configCache.InitRedis()

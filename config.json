@@ -14,5 +14,6 @@
   "STORAGE_URL" : "34.124.224.237:9000",
   "STORAGE_ID" : "stevenhumam",
   "STORAGE_SECRET" : "jambu123",
-  "SERVER_KEY": "SB-Mid-server-jUA2U3C9_qSSo1RE8POtbg5y"
+  "SERVER_KEY": "SB-Mid-server-jUA2U3C9_qSSo1RE8POtbg5y",
+  "REDIS_URL":"34.124.224.237"
 }

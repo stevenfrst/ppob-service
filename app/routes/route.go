@@ -62,6 +62,8 @@ func (d RouteControllerList) RouteRegister(c *echo.Echo) {
 	// Transaction
 	c.POST("/v1/payment/va", d.TransactionDelivery.CreatePayment, jwt, RoleValidationUser())
 	c.POST("/v1/payment/notification", d.TransactionDelivery.GetNotification)
+	c.GET("/v1/payment", d.TransactionDelivery.GetTxUser, jwt, RoleValidationUser())
+	c.GET("/v1/payment/:id", d.TransactionDelivery.GetTxByID, jwt, RoleValidationUser())
 
 	c.GET("/v1/bestseller/:id", d.ProductDelivery.GetBestSellerCategory)
 

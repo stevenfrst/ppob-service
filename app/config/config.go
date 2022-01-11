@@ -22,6 +22,7 @@ type Configuration struct {
 	STORAGE_ID             string
 	STORAGE_SECRET         string
 	SERVER_KEY             string
+	REDIS_URL              string
 }
 
 func GetConfig() Configuration {
