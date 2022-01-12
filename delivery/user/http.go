@@ -176,7 +176,6 @@ func (d *UserDelivery) VerifyUser(c echo.Context) error {
 		return delivery.ErrorResponse(c, http.StatusInternalServerError, "internal error", err)
 	}
 	return delivery.SuccessResponse(c, "Verified")
-
 }
 
 func (d *UserDelivery) ResetPassword(c echo.Context) error {

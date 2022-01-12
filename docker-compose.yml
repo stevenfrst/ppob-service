@@ -1,16 +1,10 @@
 version: '3.7'
 services:
-  crowdfund:
-    image: stevenfrst/go-crowdfund:latest
+  api:
+    image: stevenfrst/ppob-service:latest
     networks:
-      - traefik
-    deploy:
-      labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.websecure.rule=Host(`api.stevenhoyo.co`)"
-        - "traefik.http.routers.websecure.entrypoints=websecure"
-        - "traefik.http.routers.websecure.tls.certresolver=letsencryptresolver"
-        - "traefik.http.services.websecure.loadbalancer.server.port=1234"
+      - web
+
 networks:
-  traefik:
+  web:
     external: true

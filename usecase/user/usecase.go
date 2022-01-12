@@ -88,6 +88,7 @@ func (u *UseCase) Verify(id, pin int) error {
 	}
 	return nil
 }
+
 func (u *UseCase) SendPin(id int) error {
 	// Get Email By ID
 	email, err := u.repo.GetEmail(uint(id))
