@@ -79,13 +79,13 @@ func dbMigrate(db *gorm.DB) {
 			ID:       1,
 			Name:     "Telkomsel",
 			Tax:      1000,
-			ImageURL: "",
+			ImageURL: "http://app.stevenhoyo.co:9000/static/telkomsel.png",
 		},
 		{
 			ID:       2,
 			Name:     "Indosat",
 			Tax:      1000,
-			ImageURL: "",
+			ImageURL: "http://app.stevenhoyo.co:9000/static/indosat.png",
 		},
 		{
 			ID:       3,
@@ -97,31 +97,31 @@ func dbMigrate(db *gorm.DB) {
 			ID:       4,
 			Name:     "Xl",
 			Tax:      1000,
-			ImageURL: "",
+			ImageURL: "http://app.stevenhoyo.co:9000/static/xl.png",
 		},
 		{
 			ID:       5,
 			Name:     "KFC",
 			Tax:      1000,
-			ImageURL: "",
+			ImageURL: "http://app.stevenhoyo.co:9000/static/kfc.png",
 		},
 		{
 			ID:       6,
-			Name:     "ANU",
+			Name:     "Burger King",
 			Tax:      1000,
-			ImageURL: "",
+			ImageURL: "http://app.stevenhoyo.co:9000/static/burgerking.png",
 		},
 		{
 			ID:       7,
 			Name:     "PLN Prabayar",
 			Tax:      2500,
-			ImageURL: "",
+			ImageURL: "http://app.stevenhoyo.co:9000/static/pln.png",
 		},
 		{
 			ID:       8,
 			Name:     "PLN Token",
 			Tax:      1000,
-			ImageURL: "",
+			ImageURL: "http://app.stevenhoyo.co:9000/static/pln.png",
 		},
 	}
 	db.Create(&subcategory)
