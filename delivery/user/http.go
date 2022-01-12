@@ -170,7 +170,7 @@ func (d *UserDelivery) VerifyUser(c echo.Context) error {
 	}
 	err = d.usecase.Verify(jwtGetID.ID, pin)
 	notMatchErr := errors.New("not match")
-	if err != notMatchErr {
+	if errors.As(err, &notMatchErr) {
 		return delivery.SuccessResponse(c, "not match")
 	} else if err != nil {
 		return delivery.ErrorResponse(c, http.StatusInternalServerError, "internal error", err)
