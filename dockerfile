@@ -30,8 +30,8 @@ RUN cat /build/config.json
 
 # Build a small image
 FROM alpine
-
 COPY --from=builder /dist/* /
+RUN mkdir temp
 
 ENV JAEGER_AGENT_HOST=jaeger
 ENV JAEGER_AGENT_PORT=6831
