@@ -20,6 +20,7 @@ type DetailDomain struct {
 }
 
 type CreateVA struct {
+	OrderID   int
 	ProductID uint
 	Discount  int
 	Tax       int
@@ -55,7 +56,7 @@ type HistoryDomain struct {
 }
 
 type ITransactionUsecase interface {
-	GetVirtualAccount(id int, inVA CreateVA) (string, error)
+	GetVirtualAccount(userID uint, inVA CreateVA) (string, error)
 	ProcessNotification(input Notification) error
 	GetAllTxUser(id int) ([]HistoryDomain, error)
 	GetTxByID(id int) (HistoryDomain, error)

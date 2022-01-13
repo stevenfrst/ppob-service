@@ -3,6 +3,7 @@ package request
 import "ppob-service/usecase/transaction"
 
 type CreatePayment struct {
+	OrderID int `json:"order_id"`
 	ProductID uint `json:"product_id"`
 	Discount  int `json:"discount"`
 	Tax       int `json:"tax"`
@@ -12,6 +13,7 @@ type CreatePayment struct {
 
 func (c CreatePayment) ToDomainPayment() transaction.CreateVA {
 	return transaction.CreateVA{
+		OrderID: c.OrderID,
 		ProductID: c.ProductID,
 		Discount:  c.Discount,
 		Tax:       c.Tax,

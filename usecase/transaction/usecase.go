@@ -89,7 +89,7 @@ func (u *UseCase) ProcessNotification(input Notification) error {
 	return nil
 }
 
-func (u *UseCase) GetVirtualAccount(id int, inVA CreateVA) (string, error) {
+func (u *UseCase) GetVirtualAccount(userID uint, inVA CreateVA) (string, error) {
 	txDetailID, err := u.repo.CreateDetail(DetailDomain{
 		ProductID: inVA.ProductID,
 		Discount:  inVA.Discount,
@@ -100,11 +100,11 @@ func (u *UseCase) GetVirtualAccount(id int, inVA CreateVA) (string, error) {
 	}
 	total := inVA.Tax + inVA.Subtotal - inVA.Discount
 
-	resp := u.payment.CreateVirtualAccount(id, total, inVA.Bank)
+	resp := u.payment.CreateVirtualAccount(inVA.OrderID, total, inVA.Bank)
 
 	err = u.repo.CreateTx(Domain{
 		ID:                  uint(resp.ID),
-		UserID:              uint(id),
+		UserID:              userID,
 		DetailTransactionID: txDetailID,
 		Total:               total,
 		Link:                resp.VA,

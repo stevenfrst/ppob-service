@@ -27,7 +27,7 @@ func (t *TransactionDelivery) CreatePayment(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	jwtGetID := middleware.GetUser(c)
-	resp, err := t.usecase.GetVirtualAccount(jwtGetID.ID, deliveryModel.ToDomainPayment())
+	resp, err := t.usecase.GetVirtualAccount(uint(jwtGetID.ID), deliveryModel.ToDomainPayment())
 	if err != nil {
 		return delivery.ErrorResponse(c, http.StatusInternalServerError, "error", err)
 	}
