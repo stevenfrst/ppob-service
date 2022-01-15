@@ -71,4 +71,5 @@ type ITransactionRepository interface {
 	GetUserTxByID(int) ([]HistoryDomain, error)
 	GetNameNTax(id int) (string, int)
 	GetTxHistoryByID(id int) (HistoryDomain, error)
+	UpdateStocks(id int)
 }

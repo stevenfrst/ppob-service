@@ -69,22 +69,24 @@ func (u *UseCase) ProcessNotification(input Notification) error {
 		tx.TransactionStatus = input.TransactionStatus
 	}
 
-	email, username := u.repo.GetUserEmail(int(tx.UserID))
-	var mailDomain = EmailDriver{
-		Sender:  u.mail.Username,
-		ToEmail: email,
-		Subject: "Transaction Success",
-	}
-	var bodyEmail string
-	bodyEmail = fmt.Sprintf("Hello %v,\nyour recent payment of Rp %v for Invoice ID #%v SUCCESSFULLY VALIDATED. \n\nBest Regards,\nGesek.co", username, tx.Total, txId)
-	err = u.mail.DialAndSend(createHeader(mailDomain, bodyEmail))
-	if err != nil {
-		return err
-	}
-
 	err = u.repo.UpdateTx(tx)
 	if err != nil {
 		return err
+	}
+	if input.TransactionStatus == "settlement" {
+		u.repo.UpdateStocks(int(tx.DetailTransactionID))
+		email, username := u.repo.GetUserEmail(int(tx.UserID))
+		var mailDomain = EmailDriver{
+			Sender:  u.mail.Username,
+			ToEmail: email,
+			Subject: "Transaction Success",
+		}
+		var bodyEmail string
+		bodyEmail = fmt.Sprintf("Hello %v,\nyour recent payment of Rp %v for Invoice ID #%v SUCCESSFULLY VALIDATED. \n\nBest Regards,\nGesek.co", username, tx.Total, txId)
+		err = u.mail.DialAndSend(createHeader(mailDomain, bodyEmail))
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

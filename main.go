@@ -89,9 +89,9 @@ func dbMigrate(db *gorm.DB) {
 		},
 		{
 			ID:       3,
-			Name:     "Tri",
+			Name:     "Three",
 			Tax:      1000,
-			ImageURL: "",
+			ImageURL: "http://app.stevenhoyo.co:9000/static/three.jpg",
 		},
 		{
 			ID:       4,
@@ -101,43 +101,135 @@ func dbMigrate(db *gorm.DB) {
 		},
 		{
 			ID:       5,
-			Name:     "KFC",
+			Name:     "Smartfren",
+			Tax:      1000,
+			ImageURL: "http://app.stevenhoyo.co:9000/static/smartfren.png",
+		},
+		{
+			ID:       6,
+			Name:     "Axis",
+			Tax:      1000,
+			ImageURL: "http://app.stevenhoyo.co:9000/static/axis.png",
+		},
+		{
+			ID:       7,
+			Name:     "kfc",
 			Tax:      1000,
 			ImageURL: "http://app.stevenhoyo.co:9000/static/kfc.png",
 		},
 		{
-			ID:       6,
+			ID:       8,
+			Name:     "MCD",
+			Tax:      1000,
+			ImageURL: "http://app.stevenhoyo.co:9000/static/mcd.png",
+		},
+		{
+			ID:       9,
 			Name:     "Burger King",
 			Tax:      1000,
 			ImageURL: "http://app.stevenhoyo.co:9000/static/burgerking.png",
 		},
 		{
-			ID:       7,
+			ID:       10,
+			Name:     "PagiSore",
+			Tax:      1000,
+			ImageURL: "http://app.stevenhoyo.co:9000/static/pagisore.png",
+		},
+		{
+			ID:       11,
+			Name:     "Starbucks",
+			Tax:      1000,
+			ImageURL: "http://app.stevenhoyo.co:9000/static/Starbuck.png",
+		},
+		{
+			ID:       12,
+			Name:     "Richesse",
+			Tax:      1000,
+			ImageURL: "http://app.stevenhoyo.co:9000/static/ricis.png",
+		},
+		{
+			ID:       13,
+			Name:     "Steam",
+			Tax:      1000,
+			ImageURL: "http://app.stevenhoyo.co:9000/static/steam.png",
+		},
+		{
+			ID:       14,
+			Name:     "Garena",
+			Tax:      1000,
+			ImageURL: "http://app.stevenhoyo.co:9000/static/garena.png",
+		},
+
+		{
+			ID:       99,
 			Name:     "PLN Prabayar",
 			Tax:      2500,
 			ImageURL: "http://app.stevenhoyo.co:9000/static/pln.png",
 		},
 		{
-			ID:       8,
+			ID:       100,
 			Name:     "PLN Token",
 			Tax:      1000,
 			ImageURL: "http://app.stevenhoyo.co:9000/static/pln.png",
 		},
 	}
 	db.Create(&subcategory)
-	var products = []productRepo.Product{{ID: 1, Name: "Pulsa Telkomsel 10K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 10000, Stocks: 50, Sold: 6, SubCategoryID: 1},
+	var products = []productRepo.Product{
+		{ID: 1, Name: "Pulsa Telkomsel 10K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 10000, Stocks: 50, Sold: 6, SubCategoryID: 1},
 		{ID: 2, Name: "Pulsa Telkomsel 20K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 20000, Stocks: 50, Sold: 3, SubCategoryID: 1},
 		{ID: 3, Name: "Pulsa Telkomsel 25K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 25000, Stocks: 50, Sold: 10, SubCategoryID: 1},
 		{ID: 4, Name: "Pulsa Telkomsel 50K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 50000, Stocks: 50, Sold: 99, SubCategoryID: 1},
 		{ID: 5, Name: "Pulsa Telkomsel 100K", Description: "Pulsa Telkomsel", CategoryID: 1, Price: 100000, Stocks: 50, Sold: 1, SubCategoryID: 1},
-		{ID: 6, Name: "Voucher KFC 100K", Description: "Voucher Restoran", CategoryID: 2, Price: 100000, Stocks: 50, Sold: 123, SubCategoryID: 5},
-		{ID: 7, Name: "Voucher KFC 200K", Description: "Voucher Restoran", CategoryID: 2, Price: 200000, Stocks: 50, Sold: 90, SubCategoryID: 5},
-		{ID: 8, Name: "Voucher ANU 50K", Description: "Voucher Restoran", CategoryID: 2, Price: 50000, Stocks: 50, Sold: 12, SubCategoryID: 6},
-		{ID: 9, Name: "Voucher ANU 100K", Description: "Voucher Restoran", CategoryID: 2, Price: 100000, Stocks: 50, Sold: 43, SubCategoryID: 6},
-		{ID: 10, Name: "Tagihan PLN 100K", Description: "Tagihan Listrik", CategoryID: 3, Price: 100000, Stocks: int(math.Inf(1)), SubCategoryID: 7},
-		{ID: 11, Name: "Tagihan PLN 200K", Description: "Tagihan Listrik", CategoryID: 3, Price: 200000, Stocks: int(math.Inf(1)), SubCategoryID: 7},
-		{ID: 12, Name: "Tagihan PLN 300K", Description: "Tagihan Listrik", CategoryID: 3, Price: 300000, Stocks: int(math.Inf(1)), SubCategoryID: 7},
-		{ID: 14, Name: "Tagihan PLN 400K", Description: "Tagihan Listrik", CategoryID: 3, Price: 400000, Stocks: int(math.Inf(1)), SubCategoryID: 7},
+
+		{ID: 6, Name: "Pulsa Indosat 10K", Description: "Pulsa Indosat", CategoryID: 1, Price: 10000, Stocks: 50, Sold: 6, SubCategoryID: 2},
+		{ID: 7, Name: "Pulsa Indosat 20K", Description: "Pulsa Indosat", CategoryID: 1, Price: 20000, Stocks: 50, Sold: 3, SubCategoryID: 2},
+		{ID: 8, Name: "Pulsa Indosat 25K", Description: "Pulsa Indosat", CategoryID: 1, Price: 25000, Stocks: 50, Sold: 10, SubCategoryID: 2},
+		{ID: 9, Name: "Pulsa Indosat 50K", Description: "Pulsa Indosat", CategoryID: 1, Price: 50000, Stocks: 50, Sold: 99, SubCategoryID: 2},
+		{ID: 10, Name: "Pulsa Indosat 100K", Description: "Pulsa Indosat", CategoryID: 1, Price: 100000, Stocks: 50, Sold: 1, SubCategoryID: 2},
+
+		{ID: 11, Name: "Pulsa Three 10K", Description: "Pulsa Three", CategoryID: 1, Price: 10000, Stocks: 50, Sold: 6, SubCategoryID: 3},
+		{ID: 12, Name: "Pulsa Three 20K", Description: "Pulsa Three", CategoryID: 1, Price: 20000, Stocks: 50, Sold: 3, SubCategoryID: 3},
+		{ID: 13, Name: "Pulsa Three 25K", Description: "Pulsa Three", CategoryID: 1, Price: 25000, Stocks: 50, Sold: 10, SubCategoryID: 3},
+		{ID: 14, Name: "Pulsa Three 50K", Description: "Pulsa Three", CategoryID: 1, Price: 50000, Stocks: 50, Sold: 99, SubCategoryID: 3},
+		{ID: 15, Name: "Pulsa Three 100K", Description: "Pulsa Three", CategoryID: 1, Price: 100000, Stocks: 50, Sold: 1, SubCategoryID: 3},
+
+		{ID: 16, Name: "Pulsa XL 10K", Description: "Pulsa Three", CategoryID: 1, Price: 10000, Stocks: 50, Sold: 6, SubCategoryID: 4},
+		{ID: 17, Name: "Pulsa XL 20K", Description: "Pulsa Three", CategoryID: 1, Price: 20000, Stocks: 50, Sold: 3, SubCategoryID: 4},
+		{ID: 18, Name: "Pulsa XL 25K", Description: "Pulsa Three", CategoryID: 1, Price: 25000, Stocks: 50, Sold: 10, SubCategoryID: 4},
+		{ID: 19, Name: "Pulsa XL 50K", Description: "Pulsa Three", CategoryID: 1, Price: 50000, Stocks: 50, Sold: 99, SubCategoryID: 4},
+		{ID: 20, Name: "Pulsa XL 100K", Description: "Pulsa Three", CategoryID: 1, Price: 100000, Stocks: 50, Sold: 1, SubCategoryID: 4},
+
+		{ID: 21, Name: "Pulsa Smartfren 10K", Description: "Pulsa Smartfren", CategoryID: 1, Price: 10000, Stocks: 50, Sold: 6, SubCategoryID: 5},
+		{ID: 22, Name: "Pulsa Smartfren 20K", Description: "Pulsa Smartfren", CategoryID: 1, Price: 20000, Stocks: 50, Sold: 3, SubCategoryID: 5},
+		{ID: 23, Name: "Pulsa Smartfren 25K", Description: "Pulsa Smartfren", CategoryID: 1, Price: 25000, Stocks: 50, Sold: 10, SubCategoryID: 5},
+		{ID: 24, Name: "Pulsa Smartfren 50K", Description: "Pulsa Smartfren", CategoryID: 1, Price: 50000, Stocks: 50, Sold: 99, SubCategoryID: 5},
+		{ID: 25, Name: "Pulsa Smartfren 100K", Description: "Pulsa Smartfren", CategoryID: 1, Price: 100000, Stocks: 50, Sold: 1, SubCategoryID: 5},
+
+		{ID: 26, Name: "Pulsa Axis 10K", Description: "Pulsa Axis", CategoryID: 1, Price: 10000, Stocks: 50, Sold: 6, SubCategoryID: 6},
+		{ID: 27, Name: "Pulsa Axis 20K", Description: "Pulsa Axis", CategoryID: 1, Price: 20000, Stocks: 50, Sold: 3, SubCategoryID: 6},
+		{ID: 28, Name: "Pulsa Axis 25K", Description: "Pulsa Axis", CategoryID: 1, Price: 25000, Stocks: 50, Sold: 10, SubCategoryID: 6},
+		{ID: 29, Name: "Pulsa Axis 50K", Description: "Pulsa Axis", CategoryID: 1, Price: 50000, Stocks: 50, Sold: 99, SubCategoryID: 6},
+		{ID: 30, Name: "Pulsa Axis 100K", Description: "Pulsa Axis", CategoryID: 1, Price: 100000, Stocks: 50, Sold: 1, SubCategoryID: 6},
+
+		{ID: 31, Name: "Voucher KFC 100K", Description: "Voucher Restoran", CategoryID: 2, Price: 100000, Stocks: 50, Sold: 123, SubCategoryID: 7},
+		{ID: 32, Name: "Voucher KFC 200K", Description: "Voucher Restoran", CategoryID: 2, Price: 200000, Stocks: 50, Sold: 90, SubCategoryID: 7},
+
+		{ID: 33, Name: "Voucher MCD 50K", Description: "Voucher Restoran", CategoryID: 2, Price: 50000, Stocks: 50, Sold: 12, SubCategoryID: 8},
+		{ID: 34, Name: "Voucher MCD 100K", Description: "Voucher Restoran", CategoryID: 2, Price: 100000, Stocks: 50, Sold: 43, SubCategoryID: 8},
+
+		{ID: 35, Name: "Voucher BurgerKing 50K", Description: "Voucher Restoran", CategoryID: 2, Price: 50000, Stocks: 50, Sold: 12, SubCategoryID: 9},
+		{ID: 36, Name: "Voucher BurgerKing 100K", Description: "Voucher Restoran", CategoryID: 2, Price: 100000, Stocks: 50, Sold: 43, SubCategoryID: 9},
+
+		{ID: 37, Name: "Voucher PagiSore 50K", Description: "Voucher Restoran", CategoryID: 2, Price: 50000, Stocks: 50, Sold: 12, SubCategoryID: 10},
+		{ID: 38, Name: "Voucher PagiSore 100K", Description: "Voucher Restoran", CategoryID: 2, Price: 100000, Stocks: 50, Sold: 43, SubCategoryID: 10},
+
+		{ID: 39, Name: "Voucher Starbucks 50K", Description: "Voucher Restoran", CategoryID: 2, Price: 50000, Stocks: 50, Sold: 12, SubCategoryID: 11},
+		{ID: 40, Name: "Voucher Starbucks 100K", Description: "Voucher Restoran", CategoryID: 2, Price: 100000, Stocks: 50, Sold: 43, SubCategoryID: 11},
+
+		{ID: 10, Name: "Tagihan PLN 100K", Description: "Tagihan Listrik", CategoryID: 3, Price: 100000, Stocks: int(math.Inf(1)), SubCategoryID: 99},
+		{ID: 11, Name: "Tagihan PLN 200K", Description: "Tagihan Listrik", CategoryID: 3, Price: 200000, Stocks: int(math.Inf(1)), SubCategoryID: 99},
+		{ID: 12, Name: "Tagihan PLN 300K", Description: "Tagihan Listrik", CategoryID: 3, Price: 300000, Stocks: int(math.Inf(1)), SubCategoryID: 99},
+		{ID: 14, Name: "Tagihan PLN 400K", Description: "Tagihan Listrik", CategoryID: 3, Price: 400000, Stocks: int(math.Inf(1)), SubCategoryID: 99},
 	}
 	//var products = productRepo.Product{ID: 14, Name: "Tagihan PLN 400K", Description: "Tagihan Listrik", CategoryID: 3, Price: 400000, Stocks: int(math.Inf(1)), SubCategoryID: 7}
 

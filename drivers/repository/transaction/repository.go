@@ -2,7 +2,6 @@ package transaction
 
 import (
 	"gorm.io/gorm"
-	"log"
 	"ppob-service/usecase/transaction"
 )
 
@@ -62,7 +61,6 @@ func (t *TransactionRepository) GetTxHistoryByID(id int) (transaction.HistoryDom
 }
 
 func (t *TransactionRepository) UpdateTx(tx transaction.Domain) error {
-	log.Println(tx)
 	return t.db.Save(FromDomainTransaction(tx)).Error
 }
 
@@ -76,4 +74,17 @@ func (t *TransactionRepository) GetNameNTax(id int) (string, int) {
 	var repoModel Product
 	t.db.Preload("SubCategory").Where("id = ?", id).First(&repoModel)
 	return repoModel.Name, repoModel.SubCategory.Tax
+}
+
+func (t *TransactionRepository) UpdateStocks(id int)  {
+	var repoModel DetailTransaction
+	t.db.Where("id = ? ", id).First(&repoModel)
+	t.decreaseStocks(int(repoModel.ProductID))
+}
+
+func (t *TransactionRepository) decreaseStocks(id int) {
+	var repoModel Product
+
+	t.db.Where("id = ?",id).First(&repoModel)
+	repoModel.Stocks -=1
 }
