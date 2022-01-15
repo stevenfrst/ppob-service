@@ -226,10 +226,10 @@ func dbMigrate(db *gorm.DB) {
 		{ID: 39, Name: "Voucher Starbucks 50K", Description: "Voucher Restoran", CategoryID: 2, Price: 50000, Stocks: 50, Sold: 12, SubCategoryID: 11},
 		{ID: 40, Name: "Voucher Starbucks 100K", Description: "Voucher Restoran", CategoryID: 2, Price: 100000, Stocks: 50, Sold: 43, SubCategoryID: 11},
 
-		{ID: 10, Name: "Tagihan PLN 100K", Description: "Tagihan Listrik", CategoryID: 3, Price: 100000, Stocks: int(math.Inf(1)), SubCategoryID: 99},
-		{ID: 11, Name: "Tagihan PLN 200K", Description: "Tagihan Listrik", CategoryID: 3, Price: 200000, Stocks: int(math.Inf(1)), SubCategoryID: 99},
-		{ID: 12, Name: "Tagihan PLN 300K", Description: "Tagihan Listrik", CategoryID: 3, Price: 300000, Stocks: int(math.Inf(1)), SubCategoryID: 99},
-		{ID: 14, Name: "Tagihan PLN 400K", Description: "Tagihan Listrik", CategoryID: 3, Price: 400000, Stocks: int(math.Inf(1)), SubCategoryID: 99},
+		{ID: 41, Name: "Tagihan PLN 100K", Description: "Tagihan Listrik", CategoryID: 3, Price: 100000, Stocks: int(math.Inf(1)), SubCategoryID: 99},
+		{ID: 42, Name: "Tagihan PLN 200K", Description: "Tagihan Listrik", CategoryID: 3, Price: 200000, Stocks: int(math.Inf(1)), SubCategoryID: 99},
+		{ID: 43, Name: "Tagihan PLN 300K", Description: "Tagihan Listrik", CategoryID: 3, Price: 300000, Stocks: int(math.Inf(1)), SubCategoryID: 99},
+		{ID: 44, Name: "Tagihan PLN 400K", Description: "Tagihan Listrik", CategoryID: 3, Price: 400000, Stocks: int(math.Inf(1)), SubCategoryID: 99},
 	}
 	//var products = productRepo.Product{ID: 14, Name: "Tagihan PLN 400K", Description: "Tagihan Listrik", CategoryID: 3, Price: 400000, Stocks: int(math.Inf(1)), SubCategoryID: 7}
 
