@@ -1,0 +1,10 @@
+version: '3.7'
+services:
+  api:
+    image: stevenfrst/ppob-service:latest
+    networks:
+      - web
+
+networks:
+  web:
+    external: true

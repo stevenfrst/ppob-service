@@ -38,12 +38,12 @@ func (p *ConfigMidtrans) CancelPayment(orderID string) {
 	c.ExpireTransaction(orderID)
 }
 
-func (p *ConfigMidtrans) CreateVirtualAccount(userid, nominal int, bank string) CoreAPIResponse {
-	id := strconv.Itoa(userid)
+func (p *ConfigMidtrans) CreateVirtualAccount(orderID, nominal int, bank string) CoreAPIResponse {
+	id := strconv.Itoa(orderID)
 	chargeReq := &coreapi.ChargeReq{
 		PaymentType: coreapi.PaymentTypeBankTransfer,
 		TransactionDetails: midtrans.TransactionDetails{
-			OrderID:  id + generateOrderIdSuffix(),
+			OrderID:  id,
 			GrossAmt: int64(nominal),
 		},
 
@@ -56,25 +56,21 @@ func (p *ConfigMidtrans) CreateVirtualAccount(userid, nominal int, bank string) 
 		},
 	}
 	res, _ := c.ChargeTransaction(chargeReq)
+	ordersID, _ := strconv.Atoi(res.OrderID)
 	if bank == "permata" {
 		return CoreAPIResponse{
-			convertToInteger(res.PermataVaNumber),
-			res.ID,
+			ordersID,
+			res.PermataVaNumber,
 			"permata",
 		}
 
 	}
 	getVaNum := res.VaNumbers[0].VANumber
 	return CoreAPIResponse{
-		convertToInteger(getVaNum),
-		res.ID,
+		ordersID,
+		getVaNum,
 		res.VaNumbers[0].Bank,
 	}
-}
-
-func convertToInteger(str string) int {
-	out, _ := strconv.Atoi(str)
-	return out
 }
 
 func generateOrderIdSuffix() string {
