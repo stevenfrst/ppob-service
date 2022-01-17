@@ -24,10 +24,10 @@ func NewUseCase(repo ITransactionRepository, payment payment.MidtransInterface, 
 
 func (u *UseCase) GetAllTxUser(id int) ([]HistoryDomain, error) {
 	resp, err := u.repo.GetUserTxByID(id)
-	if resp[0].ID == 0 {
-		return []HistoryDomain{}, errorHelper.ErrRecordNotFound
-	} else if err != nil {
+	if err != nil {
 		return []HistoryDomain{}, err
+	} else if resp[0].ID == 0 {
+		return []HistoryDomain{}, errorHelper.ErrRecordNotFound
 	}
 
 	for x := range resp {
@@ -41,10 +41,10 @@ func (u *UseCase) GetAllTxUser(id int) ([]HistoryDomain, error) {
 
 func (u *UseCase) GetTxByID(id int) (HistoryDomain, error) {
 	resp, err := u.repo.GetTxHistoryByID(id)
-	if resp.ID == 0 {
-		return HistoryDomain{}, errorHelper.ErrRecordNotFound
-	} else if err != nil {
+	if err != nil {
 		return HistoryDomain{}, err
+	} else if resp.ID == 0 {
+		return HistoryDomain{}, errorHelper.ErrRecordNotFound
 	}
 	name, tax := u.repo.GetNameNTax(int(resp.ProductID))
 	resp.ProductName = name
@@ -55,10 +55,10 @@ func (u *UseCase) GetTxByID(id int) (HistoryDomain, error) {
 func (u *UseCase) ProcessNotification(input Notification) error {
 	txId, _ := strconv.Atoi(input.OrderID)
 	tx, err := u.repo.GetTxByID(txId)
-	if tx.ID == 0 {
-		return errorHelper.ErrRecordNotFound
-	} else if err != nil {
+	if err != nil {
 		return err
+	} else if tx.ID == 0 {
+		return errorHelper.ErrRecordNotFound
 	}
 
 	if input.PaymentType == "bank_transfer" && input.TransactionStatus == "capture" && input.FraudStatus == "accept" || input.TransactionStatus == "settlement" {
