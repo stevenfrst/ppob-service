@@ -18,13 +18,13 @@ func (_m *MidtransInterface) CancelPayment(orderID string) {
 	_m.Called(orderID)
 }
 
-// CreateVirtualAccount provides a mock function with given fields: userid, nominal, bank
-func (_m *MidtransInterface) CreateVirtualAccount(userid int, nominal int, bank string) payment.CoreAPIResponse {
-	ret := _m.Called(userid, nominal, bank)
+// CreateVirtualAccount provides a mock function with given fields: orderID, nominal, bank
+func (_m *MidtransInterface) CreateVirtualAccount(orderID int, nominal int, bank string) payment.CoreAPIResponse {
+	ret := _m.Called(orderID, nominal, bank)
 
 	var r0 payment.CoreAPIResponse
 	if rf, ok := ret.Get(0).(func(int, int, string) payment.CoreAPIResponse); ok {
-		r0 = rf(userid, nominal, bank)
+		r0 = rf(orderID, nominal, bank)
 	} else {
 		r0 = ret.Get(0).(payment.CoreAPIResponse)
 	}

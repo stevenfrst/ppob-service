@@ -14,7 +14,7 @@ type ConfigMidtrans struct {
 type MidtransInterface interface {
 	SetupGlobalMidtransConfig()
 	CancelPayment(orderID string)
-	CreateVirtualAccount(userid, nominal int, bank string) CoreAPIResponse
+	CreateVirtualAccount(orderID, nominal int, bank string) CoreAPIResponse
 }
 
 type CoreAPIResponse struct {
