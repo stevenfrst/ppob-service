@@ -31,10 +31,10 @@ func (u *UseCase) Login(username, password string) (Domain, error) {
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return Domain{}, errors.New("user not found")
+	}  else if err != nil {
+		return user, errors.New("internal error")
 	} else if user.ID == 0 {
 		return Domain{}, errors.New("email/password not match")
-	} else if err != nil {
-		return user, errors.New("internal error")
 	}
 	token := u.jwt.GenerateToken(int(user.ID), user.Role, user.IsVerified)
 	user.Token = token

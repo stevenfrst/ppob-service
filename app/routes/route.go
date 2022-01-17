@@ -65,8 +65,6 @@ func (d RouteControllerList) RouteRegister(c *echo.Echo) {
 	c.GET("/v1/payment", d.TransactionDelivery.GetTxUser, jwt, RoleValidationUser())
 	c.GET("/v1/payment/:id", d.TransactionDelivery.GetTxByID, jwt, RoleValidationUser())
 
-	c.GET("/v1/bestseller/:id", d.ProductDelivery.GetBestSellerCategory)
-
 	c.GET("/test", d.UserDelivery.JWTTEST, jwt, RoleValidationUser())
 
 }

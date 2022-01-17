@@ -141,6 +141,7 @@ func (t *Transaction) ToHistoryDomain() transaction.HistoryDomain {
 		FraudStatus:       t.FraudStatus,
 		PaymentType:       t.PaymentType,
 		Provider:          t.Provider,
+		CreatedAt: t.DetailTransaction.CreatedAt,
 	}
 }
 

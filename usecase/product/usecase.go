@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/go-sql-driver/mysql"
 	"github.com/minio/minio-go/v7"
-	"log"
 	"math/rand"
 	"ppob-service/helpers/errorHelper"
 	"time"
@@ -39,10 +38,10 @@ func (p *ProductUsecase) GetTagihanPLN() (Domain, error) {
 
 func (p *ProductUsecase) GetProduct(id int) ([]Domain, error) {
 	resp, err := p.repo.GetProduct(id)
-	if resp[0].ID == 0 {
-		return []Domain{}, errorHelper.ErrRecordNotFound
-	} else if err != nil {
+	if err != nil {
 		return []Domain{}, err
+	} else if resp[0].ID == 0 {
+		return []Domain{}, errorHelper.ErrRecordNotFound
 	}
 	return resp, nil
 }
@@ -61,20 +60,6 @@ func (p *ProductUsecase) Delete(id int) error {
 		return err
 	}
 	return nil
-}
-
-func (p *ProductUsecase) GetBestSellerCategory(id int) (resp []Domain, err error) {
-	for x := 0; x < 5; x++ {
-		rep, _ := p.repo.GetBestSellerCategory(id, x)
-		resp = append(resp, rep)
-		//log.Println(id, x)
-	}
-	if err != nil {
-		return []Domain{}, err
-	} else if resp[0].ID == 0 {
-		resp, _ = p.repo.GetBestSellerCategorySQL(id)
-	}
-	return resp, nil
 }
 
 func (p *ProductUsecase) Create(domain CreateDomain) error {
@@ -131,12 +116,10 @@ func (p *ProductUsecase) CreateSubCategory(sub SubCategory, objName string) erro
 	if _, err := p.s3.FPutObject(context.Background(), "static", objName, sub.ImageURL, minio.PutObjectOptions{
 		ContentType: "image/png",
 	}); err != nil {
-		log.Println(err)
 		return err
 	}
 
 	sub.ImageURL = fmt.Sprintf("http://%v/static/%v", p.url, objName)
-	log.Println(sub.ImageURL)
 	err := p.repo.CreateSubCategory(sub)
 	var mysqlErr *mysql.MySQLError
 	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
