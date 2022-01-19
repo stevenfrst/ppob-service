@@ -123,29 +123,6 @@ func (p *ProductDelivery) DeleteProduct(c echo.Context) error {
 	return delivery.SuccessResponse(c, "success")
 }
 
-// GetBestSellerCategory godoc
-// @Summary Get Best Seller
-// @Description Get Best Seller each Category
-// @Tags Product
-// @Accept json
-// @Produce json
-// @Param id path string true "id category"
-// @Success 200 {object} delivery.JSONSuccessResult{}
-// @Success 400 {object} delivery.JSONBadReqResult{}
-// @Success 500 {object} delivery.JSONInternalResult{}
-// @Router /v1/bestseller/{id} [get]
-func (p *ProductDelivery) GetBestSellerCategory(c echo.Context) error {
-	idParam, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		return delivery.ErrorResponse(c, http.StatusBadRequest, "Wrong Params", err)
-	}
-	resp, err := p.usecase.GetBestSellerCategory(idParam)
-	if err != nil {
-		return delivery.ErrorResponse(c, http.StatusInternalServerError, "Internal Error", err)
-	}
-	return delivery.SuccessResponse(c, response.FromDomainList(resp))
-}
-
 // CreateProduct godoc
 // @Summary Create Product
 // @Description Edit Product via JSON
@@ -167,9 +144,9 @@ func (p *ProductDelivery) CreateProduct(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	err := p.usecase.Create(deliveryModel.ToDomain())
-	if errors.As(err, &errorHelper.DuplicateData){
+	if errors.As(err, &errorHelper.DuplicateData) {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}else if err != nil {
+	} else if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return delivery.SuccessResponse(c, "success")
@@ -293,9 +270,9 @@ func (p *ProductDelivery) CreateCategory(c echo.Context) error {
 		return delivery.ErrorResponse(c, http.StatusBadRequest, "Required Data", err)
 	}
 	err = p.usecase.CreateCategory(deliveryModel.ToDomainCategory())
-	if errors.As(err,&errorHelper.DuplicateData){
-		return delivery.ErrorResponse(c,http.StatusBadRequest,"not found",err)
-	}else if err != nil {
+	if errors.As(err, &errorHelper.DuplicateData) {
+		return delivery.ErrorResponse(c, http.StatusBadRequest, "not found", err)
+	} else if err != nil {
 		return delivery.ErrorResponse(c, http.StatusInternalServerError, "failed to create category", err)
 	}
 	return delivery.SuccessResponse(c, "success")
@@ -373,7 +350,7 @@ func (p *ProductDelivery) CreateSubCategory(c echo.Context) error {
 		fmt.Println(err)
 	}
 	defer tempFile.Close()
-
+	log.Println(tempFile.Name())
 	fileBytes, err := ioutil.ReadAll(src)
 	if err != nil {
 		fmt.Println(err)
@@ -384,14 +361,12 @@ func (p *ProductDelivery) CreateSubCategory(c echo.Context) error {
 		os.Remove(tempFile.Name())
 	}()
 
-	log.Println(tempFile.Name())
-
 	deliveryModel.Name = name
 	deliveryModel.Tax = tax
 	deliveryModel.ImageURL = tempFile.Name()
 
 	err = p.usecase.CreateSubCategory(deliveryModel.ToDomainSubCategory(), fmt.Sprintf("%v.png", name))
-	if errors.As(err,&errorHelper.DuplicateData) {
+	if errors.As(err, &errorHelper.DuplicateData) {
 		return delivery.ErrorResponse(c, http.StatusBadRequest, "", err)
 	} else if err != nil {
 		return delivery.ErrorResponse(c, http.StatusInternalServerError, "", err)

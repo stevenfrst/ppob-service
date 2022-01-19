@@ -87,4 +87,5 @@ func (t *TransactionRepository) decreaseStocks(id int) {
 
 	t.db.Where("id = ?",id).First(&repoModel)
 	repoModel.Stocks -=1
+	t.db.Save(&repoModel)
 }

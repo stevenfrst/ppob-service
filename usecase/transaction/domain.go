@@ -1,5 +1,7 @@
 package transaction
 
+import "time"
+
 type Domain struct {
 	ID                  uint
 	UserID              uint
@@ -53,6 +55,7 @@ type HistoryDomain struct {
 	FraudStatus       string
 	PaymentType       string
 	Provider          string
+	CreatedAt time.Time
 }
 
 type ITransactionUsecase interface {

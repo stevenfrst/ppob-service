@@ -29,20 +29,20 @@ func (u *VoucherUsecase) Create(voc Domain) error {
 
 func (u *VoucherUsecase) ReadById(id int) (Domain, error) {
 	resp, err := u.repo.ReadById(id)
-	if resp.ID == 0 {
-		return Domain{}, errorHelper.ErrRecordNotFound
-	} else if err != nil {
+	if err != nil {
 		return Domain{}, err
+	} else if resp.ID == 0 {
+		return Domain{}, errorHelper.ErrRecordNotFound
 	}
 	return resp, nil
 }
 
 func (u *VoucherUsecase) ReadALL() ([]Domain, error) {
 	resp, err := u.repo.ReadALL()
-	if resp[0].ID == 0 {
-		return []Domain{}, errorHelper.ErrRecordNotFound
-	} else if err != nil {
+	if err != nil {
 		return []Domain{}, err
+	} else if resp[0].ID == 0 {
+		return []Domain{}, errorHelper.ErrRecordNotFound
 	}
 	return resp, nil
 }

@@ -39,7 +39,6 @@ type IProductUsecase interface {
 	GetProduct(id int) ([]Domain, error)
 	EditProduct(item Domain) error
 	Delete(id int) error
-	GetBestSellerCategory(id int) ([]Domain, error)
 	Create(domain CreateDomain) error
 	GetAll(offset, pageSize int) ([]Domain, error)
 	GetAllCategory() []Category
