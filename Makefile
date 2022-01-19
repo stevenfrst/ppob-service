@@ -1,5 +1,5 @@
 deploy:
-	git pull origin development
+	git pull origin swagger
 	docker image build -t stevenfrst/ppob-service .
 	docker image push stevenfrst/ppob-service
 	docker stack rm api

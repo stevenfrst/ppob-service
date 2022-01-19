@@ -56,7 +56,7 @@ func (d RouteControllerList) RouteRegister(c *echo.Echo) {
 	c.POST("/v1/vouchers", d.VoucherDelivery.CreteVoucher, jwt, RoleValidationAdmin())
 	c.GET("/v1/vouchers/:id", d.VoucherDelivery.ReadByID)
 	c.GET("/v1/vouchers/all", d.VoucherDelivery.ReadAll)
-	c.DELETE("/v1/vouchers:id", d.VoucherDelivery.DeleteByID)
+	c.DELETE("/v1/vouchers/:id", d.VoucherDelivery.DeleteByID)
 	c.POST("/v1/vouchers/verify/:voucher", d.VoucherDelivery.Verify, jwt, RoleValidationUser())
 
 	// Transaction

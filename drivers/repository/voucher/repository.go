@@ -2,7 +2,6 @@ package vouchers
 
 import (
 	"gorm.io/gorm"
-	"log"
 	"ppob-service/helpers/errorHelper"
 	vouchers "ppob-service/usecase/voucher"
 )
@@ -53,14 +52,13 @@ func (r *VoucherRepository) DeleteByID(id int) error {
 	return nil
 }
 
-func (r *VoucherRepository) Verify(code string) error {
+func (r *VoucherRepository) Verify(code string) (int,error) {
 	var repoModel Voucher
-	log.Println(code)
 	err := r.db.Where("code = ?", code).First(&repoModel).Error
 	if err != nil {
-		return err
+		return 0,err
 	} else if repoModel.ID == 0 {
-		return errorHelper.ErrVoucherNotMatch
+		return 0,errorHelper.ErrVoucherNotMatch
 	}
-	return nil
+	return repoModel.Value,nil
 }

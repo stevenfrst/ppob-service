@@ -79,11 +79,11 @@ func (d *VoucherDelivery) DeleteByID(c echo.Context) error {
 
 func (d *VoucherDelivery) Verify(c echo.Context) error {
 	voucher := c.Param("voucher")
-	err := d.usecase.Verify(voucher)
+	value,err := d.usecase.Verify(voucher)
 	if errors.As(err, &errorHelper.ErrVoucherNotMatch) {
 		return delivery.ErrorResponse(c, http.StatusBadRequest, "", err)
 	} else if err != nil {
 		return delivery.ErrorResponse(c, http.StatusInternalServerError, "internal errors", err)
 	}
-	return delivery.SuccessResponse(c, "voucher match")
+	return delivery.SuccessResponse(c, value)
 }

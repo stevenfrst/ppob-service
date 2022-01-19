@@ -33,8 +33,9 @@ func TestVerify(t *testing.T) {
 	Setup()
 	t.Run("functional", func(t *testing.T) {
 		voucherRepositoryMock.On("Verify",
-			mock.AnythingOfType("string")).Return(nil).Once()
-		err := voucherUseCase.Verify("Test123")
+			mock.AnythingOfType("string")).Return(10000,
+			nil).Once()
+		_, err := voucherUseCase.Verify("Test123")
 		assert.Nil(t, err)
 	})
 }
