@@ -15,11 +15,11 @@ type History struct {
 	FraudStatus       string `json:"fraud_status"`
 	PaymentType       string `json:"payment_type"`
 	Provider          string `json:"provider"`
+	ImageURL string `json:"image_url"`
 	CreatedAt         string `json:"created_at"`
 }
 
 func FromDomain(hd transaction.HistoryDomain) History {
-	hd.CreatedAt.Format("2006-01-02 15:04:05")
 	return History{
 		ID:                hd.ID,
 		ProductName:       hd.ProductName,
@@ -31,7 +31,8 @@ func FromDomain(hd transaction.HistoryDomain) History {
 		FraudStatus:       hd.FraudStatus,
 		PaymentType:       hd.PaymentType,
 		Provider:          hd.Provider,
-		CreatedAt:         hd.CreatedAt.Format("2006-01-02 15:04:05"),
+		ImageURL: hd.ImageURL,
+		CreatedAt:         hd.CreatedAt.String(),
 	}
 }
 

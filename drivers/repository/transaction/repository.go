@@ -70,13 +70,13 @@ func (t *TransactionRepository) GetUserEmail(id int) (string, string) {
 	return repoModel.Email, repoModel.Username
 }
 
-func (t *TransactionRepository) GetNameNTax(id int) (string, int) {
+func (t *TransactionRepository) GetNameNTax(id int) (string, string, int) {
 	var repoModel Product
 	t.db.Preload("SubCategory").Where("id = ?", id).First(&repoModel)
-	return repoModel.Name, repoModel.SubCategory.Tax
+	return repoModel.Name, repoModel.SubCategory.ImageURL, repoModel.SubCategory.Tax
 }
 
-func (t *TransactionRepository) UpdateStocks(id int)  {
+func (t *TransactionRepository) UpdateStocks(id int) {
 	var repoModel DetailTransaction
 	t.db.Where("id = ? ", id).First(&repoModel)
 	t.decreaseStocks(int(repoModel.ProductID))
@@ -85,7 +85,7 @@ func (t *TransactionRepository) UpdateStocks(id int)  {
 func (t *TransactionRepository) decreaseStocks(id int) {
 	var repoModel Product
 
-	t.db.Where("id = ?",id).First(&repoModel)
-	repoModel.Stocks -=1
+	t.db.Where("id = ?", id).First(&repoModel)
+	repoModel.Stocks -= 1
 	t.db.Save(&repoModel)
 }
