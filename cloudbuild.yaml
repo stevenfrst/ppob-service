@@ -1,0 +1,61 @@
+name: ppob-service
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PROJECT_ID: ${{ secrets.GCE_PROJECT }}
+  GCE_INSTANCE: master
+  GCE_INSTANCE_ZONE: asia-southeast1-b
+
+jobs:
+  # setup-build-publish-deploy:
+  build:
+  #     name: Setup, Build, Publish, and Deploy
+      runs-on: debian-latest
+
+  #     permissions:
+  #       contents: 'read'
+  #       id-token: 'write'
+
+    steps:
+    # - id: 'auth'
+    #   name: 'Authenticate to Google Cloud'
+    #   uses: 'google-github-actions/auth@v0'
+    #   with:
+    #     service_account: '083717044987-compute@developer.gserviceaccount.com'
+
+    # - name: Set up Cloud SDK
+    #   uses: google-github-actions/setup-gcloud@v0
+
+    # - run: |-
+    #     gcloud --quiet auth configure-docker
+
+    # - name: Build
+    #   run: |-
+    #     docker build --tag "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:$GITHUB_SHA" .
+
+    # - name: Publish
+    #   run: |-
+    #     docker push "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:$GITHUB_SHA"
+        
+    # - name: Deploy
+    #   run: |-
+    #     gcloud compute instances update-container "$GCE_INSTANCE" \
+    #       --zone "$GCE_INSTANCE_ZONE" \
+    #       --container-image "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:$GITHUB_SHA"
+
+    # - name: Checkout
+    #   uses: actions/checkout@v2
+
+    # - name: Set up Go
+    #     uses: actions/setup-go@v2
+    #     with:
+    #     go-version: 1.17
+
+    - name: Deploy
+      run: |-
+        gcloud compute ssh master --zone=asia-southeast1-b --tunnel-through-iap --project=black-backup-337108 --command="touch main.go"
