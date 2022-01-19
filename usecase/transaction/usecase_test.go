@@ -60,6 +60,7 @@ func Setup() {
 		FraudStatus:       "accept",
 		PaymentType:       "bank_transfer",
 		Provider:          "bni",
+		ImageURL:          "http://test.com",
 		CreatedAt:         time.Time{},
 	}
 	historyDomainMocks = append(historyDomainMocks, historyDomainMock)
@@ -235,7 +236,7 @@ func TestGetTxID(t *testing.T) {
 
 		txMockrepo.On("GetNameNTax",
 			mock.AnythingOfType("int"),
-		).Return("tahu", 1000).Once()
+		).Return("tahu", "http://test.com", 1000).Once()
 
 		resp, err := txUseCase.GetTxByID(1)
 		assert.NoError(t, err)
@@ -270,7 +271,7 @@ func TestGetAllTxUsername(t *testing.T) {
 
 		txMockrepo.On("GetNameNTax",
 			mock.AnythingOfType("int"),
-		).Return("test", 1000)
+		).Return("test", "http://test.com", 1000)
 
 		resp, err := txUseCase.GetAllTxUser(2)
 		assert.NoError(t, err)

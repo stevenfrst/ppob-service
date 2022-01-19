@@ -55,7 +55,8 @@ type HistoryDomain struct {
 	FraudStatus       string
 	PaymentType       string
 	Provider          string
-	CreatedAt time.Time
+	ImageURL          string
+	CreatedAt         time.Time
 }
 
 type ITransactionUsecase interface {
@@ -72,7 +73,7 @@ type ITransactionRepository interface {
 	UpdateTx(tx Domain) error
 	GetUserEmail(id int) (string, string)
 	GetUserTxByID(int) ([]HistoryDomain, error)
-	GetNameNTax(id int) (string, int)
+	GetNameNTax(id int) (string, string, int)
 	GetTxHistoryByID(id int) (HistoryDomain, error)
 	UpdateStocks(id int)
 }

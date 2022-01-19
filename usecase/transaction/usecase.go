@@ -31,9 +31,10 @@ func (u *UseCase) GetAllTxUser(id int) ([]HistoryDomain, error) {
 	}
 
 	for x := range resp {
-		name, tax := u.repo.GetNameNTax(int(resp[x].ProductID))
+		name, imageURL, tax := u.repo.GetNameNTax(int(resp[x].ProductID))
 		resp[x].ProductName = name
 		resp[x].Tax = tax
+		resp[x].ImageURL = imageURL
 	}
 
 	return resp, nil
@@ -46,9 +47,10 @@ func (u *UseCase) GetTxByID(id int) (HistoryDomain, error) {
 	} else if resp.ID == 0 {
 		return HistoryDomain{}, errorHelper.ErrRecordNotFound
 	}
-	name, tax := u.repo.GetNameNTax(int(resp.ProductID))
+	name, imageURL, tax := u.repo.GetNameNTax(int(resp.ProductID))
 	resp.ProductName = name
 	resp.Tax = tax
+	resp.ImageURL = imageURL
 	return resp, nil
 }
 

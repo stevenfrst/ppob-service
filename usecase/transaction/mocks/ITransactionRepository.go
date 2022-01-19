@@ -49,7 +49,7 @@ func (_m *ITransactionRepository) CreateTx(tx transaction.Domain) error {
 }
 
 // GetNameNTax provides a mock function with given fields: id
-func (_m *ITransactionRepository) GetNameNTax(id int) (string, int) {
+func (_m *ITransactionRepository) GetNameNTax(id int) (string, string, int) {
 	ret := _m.Called(id)
 
 	var r0 string
@@ -59,14 +59,21 @@ func (_m *ITransactionRepository) GetNameNTax(id int) (string, int) {
 		r0 = ret.Get(0).(string)
 	}
 
-	var r1 int
-	if rf, ok := ret.Get(1).(func(int) int); ok {
+	var r1 string
+	if rf, ok := ret.Get(1).(func(int) string); ok {
 		r1 = rf(id)
 	} else {
-		r1 = ret.Get(1).(int)
+		r1 = ret.Get(1).(string)
 	}
 
-	return r0, r1
+	var r2 int
+	if rf, ok := ret.Get(2).(func(int) int); ok {
+		r2 = rf(id)
+	} else {
+		r2 = ret.Get(2).(int)
+	}
+
+	return r0, r1, r2
 }
 
 // GetTxByID provides a mock function with given fields: id
