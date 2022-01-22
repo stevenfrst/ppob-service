@@ -11,53 +11,53 @@ on:
 
 jobs:
 #  job 1: unit test
-#  unit-test:
-#    name: 'Do unit test to the project'
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Setup github action (CI)
-#        uses: actions/checkout@v2
-#      - name: Setup golang
-#        uses: actions/setup-go@v2
-#        with:
-#          go-version: 1.17
-#      - name: create test file
-#        env:
-#          CONFIG_FILE: ${{ secrets.CONFIGJSON }}
-#        run: |
-#          touch ./config.json
-#          echo "$CONFIG_FILE" >> ./config.json
-#          cat ./config.json
-#          ls -a .
-#        shell: bash
-#      - name: Running unit test
-#        run: go test ./... -cover
+  unit-test:
+    name: 'Do unit test to the project'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup github action (CI)
+        uses: actions/checkout@v2
+      - name: Setup golang
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+      - name: create test file
+        env:
+          CONFIG_FILE: ${{ secrets.CONFIGJSON }}
+        run: |
+          touch ./config.json
+          echo "$CONFIG_FILE" >> ./config.json
+          cat ./config.json
+          ls -a .
+        shell: bash
+      - name: Running unit test
+        run: go test ./... -cover
 #
-#  #  job 2: build docker image, push registry
-#  build-push-docker:
-#    name: 'Build image and push to registry'
-#    runs-on: ubuntu-latest
-#    needs: unit-test
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: create test file
-#        env:
-#          CONFIG_FILE: ${{ secrets.CONFIGJSON }}
-#        run: |
-#          touch ./config.json
-#          echo "$CONFIG_FILE" >> ./config.json
-#          cat ./config.json
-#          ls -a .
-#        shell: bash
-#      - name: build docker
-#        run: docker build -t stevenfrst/go-crowdfund .
-#      - name: login dockerhub
-#        uses: docker/login-action@v1
-#        with:
-#          username: ${{ secrets.DOCKERHUB_USERNAME }}
-#          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-#      - name: push the previously built image to registry
-#        run: docker push stevenfrst/go-crowdfund
+  #  job 2: build docker image, push registry
+  build-push-docker:
+    name: 'Build image and push to registry'
+    runs-on: ubuntu-latest
+    needs: unit-test
+    steps:
+      - uses: actions/checkout@v2
+      - name: create test file
+        env:
+          CONFIG_FILE: ${{ secrets.CONFIGJSON }}
+        run: |
+          touch ./config.json
+          echo "$CONFIG_FILE" >> ./config.json
+          cat ./config.json
+          ls -a .
+        shell: bash
+      - name: build docker
+        run: docker build -t stevenfrst/go-crowdfund .
+      - name: login dockerhub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: push the previously built image to registry
+        run: docker push stevenfrst/go-crowdfund
 #  # Sonar Analyst
 #  sonarQubeTrigger:
 #    name: SonarQube Trigger
@@ -73,7 +73,7 @@ jobs:
   # deploy ke swarm
   deploy-to-swarm:
     runs-on: ubuntu-latest
-#    needs: build-push-docker
+    needs: build-push-docker
     steps:
       - name: Deploy using ssh
         uses: appleboy/ssh-action@master
