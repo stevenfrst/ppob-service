@@ -50,7 +50,7 @@ jobs:
           ls -a .
         shell: bash
       - name: build docker
-        run: docker build -t stevenfrst/go-crowdfund .
+        run: docker build -t stevenfrst/ppob-service .
       - name: login dockerhub
         uses: docker/login-action@v1
         with:
