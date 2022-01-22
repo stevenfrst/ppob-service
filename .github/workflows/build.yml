@@ -57,7 +57,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: push the previously built image to registry
-        run: docker push stevenfrst/go-crowdfund
+        run: docker push stevenfrst/ppob-service
 #  # Sonar Analyst
 #  sonarQubeTrigger:
 #    name: SonarQube Trigger
