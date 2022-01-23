@@ -2,6 +2,8 @@ package main
 
 import (
 	"github.com/go-playground/validator"
+	"github.com/labstack/echo-contrib/jaegertracing"
+	"github.com/labstack/echo-contrib/prometheus"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"gorm.io/gorm"
@@ -302,10 +304,13 @@ func main() {
 	e := echo.New()
 	e.Validator = &CustomValidator{Validator: validator.New()}
 	e.Pre(middleware.RemoveTrailingSlash())
-	//e.Use(middleware.Logger())
-	//e.Use(middleware.Recover())
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
-
+	p := prometheus.NewPrometheus("echo", nil)
+	p.Use(e)
+	c := jaegertracing.New(e, nil)
+	defer c.Close()
 	// User
 	userIRepo := userRepo.NewRepository(db, conn)
 	userIUsecase := userUsecase.NewUseCase(userIRepo, &jwt, *dialer)
