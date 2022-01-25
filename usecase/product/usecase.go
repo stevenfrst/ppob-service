@@ -119,7 +119,7 @@ func (p *ProductUsecase) CreateSubCategory(sub SubCategory, objName string) erro
 		return err
 	}
 
-	sub.ImageURL = fmt.Sprintf("http://%v/static/%v", p.url, objName)
+	sub.ImageURL = fmt.Sprintf("https://%v/static/%v", p.url, objName)
 	err := p.repo.CreateSubCategory(sub)
 	var mysqlErr *mysql.MySQLError
 	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {

@@ -14,7 +14,7 @@ type IVoucherRepository interface {
 	ReadById(id int) (Domain, error)
 	ReadALL() ([]Domain, error)
 	DeleteByID(id int) error
-	Verify(code string) error
+	Verify(code string) (int,error)
 }
 
 type IVoucherUseCase interface {
@@ -22,5 +22,5 @@ type IVoucherUseCase interface {
 	ReadById(id int) (Domain, error)
 	ReadALL() ([]Domain, error)
 	DeleteByID(id int) error
-	Verify(code string) error
+	Verify(code string) (int,error)
 }

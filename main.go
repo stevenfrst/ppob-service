@@ -2,6 +2,8 @@ package main
 
 import (
 	"github.com/go-playground/validator"
+	"github.com/labstack/echo-contrib/jaegertracing"
+	"github.com/labstack/echo-contrib/prometheus"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"gorm.io/gorm"
@@ -79,98 +81,98 @@ func dbMigrate(db *gorm.DB) {
 			ID:       1,
 			Name:     "Telkomsel",
 			Tax:      1000,
-			ImageURL: "http://app.stevenhoyo.co:9000/static/telkomsel.png",
+			ImageURL: "https://app.stevenhoyo.co/static/telkomsel.png",
 		},
 		{
 			ID:       2,
 			Name:     "Indosat",
 			Tax:      1000,
-			ImageURL: "http://app.stevenhoyo.co:9000/static/indosat.png",
+			ImageURL: "https://app.stevenhoyo.co/static/indosat.png",
 		},
 		{
 			ID:       3,
 			Name:     "Three",
 			Tax:      1000,
-			ImageURL: "http://app.stevenhoyo.co:9000/static/three.jpg",
+			ImageURL: "https://app.stevenhoyo.co/static/three.jpg",
 		},
 		{
 			ID:       4,
 			Name:     "Xl",
 			Tax:      1000,
-			ImageURL: "http://app.stevenhoyo.co:9000/static/xl.png",
+			ImageURL: "https://app.stevenhoyo.co/static/xl.png",
 		},
 		{
 			ID:       5,
 			Name:     "Smartfren",
 			Tax:      1000,
-			ImageURL: "http://app.stevenhoyo.co:9000/static/smartfren.png",
+			ImageURL: "https://app.stevenhoyo.co/static/smartfren.png",
 		},
 		{
 			ID:       6,
 			Name:     "Axis",
 			Tax:      1000,
-			ImageURL: "http://app.stevenhoyo.co:9000/static/axis.png",
+			ImageURL: "https://app.stevenhoyo.co/static/axis.png",
 		},
 		{
 			ID:       7,
 			Name:     "kfc",
 			Tax:      1000,
-			ImageURL: "http://app.stevenhoyo.co:9000/static/kfc.png",
+			ImageURL: "https://app.stevenhoyo.co/static/kfc.png",
 		},
 		{
 			ID:       8,
 			Name:     "MCD",
 			Tax:      1000,
-			ImageURL: "http://app.stevenhoyo.co:9000/static/mcd.png",
+			ImageURL: "https://app.stevenhoyo.co/static/mcd.png",
 		},
 		{
 			ID:       9,
 			Name:     "Burger King",
 			Tax:      1000,
-			ImageURL: "http://app.stevenhoyo.co:9000/static/burgerking.png",
+			ImageURL: "https://app.stevenhoyo.co/static/burgerking.png",
 		},
 		{
 			ID:       10,
 			Name:     "PagiSore",
 			Tax:      1000,
-			ImageURL: "http://app.stevenhoyo.co:9000/static/pagisore.png",
+			ImageURL: "https://app.stevenhoyo.co/static/pagisore.png",
 		},
 		{
 			ID:       11,
 			Name:     "Starbucks",
 			Tax:      1000,
-			ImageURL: "http://app.stevenhoyo.co:9000/static/Starbuck.png",
+			ImageURL: "https://app.stevenhoyo.co/static/Starbuck.png",
 		},
 		{
 			ID:       12,
 			Name:     "Richesse",
 			Tax:      1000,
-			ImageURL: "http://app.stevenhoyo.co:9000/static/ricis.png",
+			ImageURL: "https://app.stevenhoyo.co/static/ricis.png",
 		},
 		{
 			ID:       13,
 			Name:     "Steam",
 			Tax:      1000,
-			ImageURL: "http://app.stevenhoyo.co:9000/static/steam.png",
+			ImageURL: "https://app.stevenhoyo.co/static/steam.png",
 		},
 		{
 			ID:       14,
 			Name:     "Garena",
 			Tax:      1000,
-			ImageURL: "http://app.stevenhoyo.co:9000/static/garena.png",
+			ImageURL: "https://app.stevenhoyo.co/static/garena.png",
 		},
 
 		{
 			ID:       99,
 			Name:     "PLN Prabayar",
 			Tax:      2500,
-			ImageURL: "http://app.stevenhoyo.co:9000/static/pln.png",
+			ImageURL: "https://app.stevenhoyo.co/static/pln.png",
 		},
 		{
 			ID:       100,
 			Name:     "PLN Token",
 			Tax:      1000,
-			ImageURL: "http://app.stevenhoyo.co:9000/static/pln.png",
+			ImageURL: "https://app.stevenhoyo.co/static/pln.png",
 		},
 	}
 	db.Create(&subcategory)
@@ -302,10 +304,13 @@ func main() {
 	e := echo.New()
 	e.Validator = &CustomValidator{Validator: validator.New()}
 	e.Pre(middleware.RemoveTrailingSlash())
-	//e.Use(middleware.Logger())
-	//e.Use(middleware.Recover())
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
-
+	p := prometheus.NewPrometheus("echo", nil)
+	p.Use(e)
+	c := jaegertracing.New(e, nil)
+	defer c.Close()
 	// User
 	userIRepo := userRepo.NewRepository(db, conn)
 	userIUsecase := userUsecase.NewUseCase(userIRepo, &jwt, *dialer)

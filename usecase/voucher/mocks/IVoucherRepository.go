@@ -86,15 +86,22 @@ func (_m *IVoucherRepository) ReadById(id int) (vouchers.Domain, error) {
 }
 
 // Verify provides a mock function with given fields: code
-func (_m *IVoucherRepository) Verify(code string) error {
+func (_m *IVoucherRepository) Verify(code string) (int, error) {
 	ret := _m.Called(code)
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(string) error); ok {
+	var r0 int
+	if rf, ok := ret.Get(0).(func(string) int); ok {
 		r0 = rf(code)
 	} else {
-		r0 = ret.Error(0)
+		r0 = ret.Get(0).(int)
 	}
 
-	return r0
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(code)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }

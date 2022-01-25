@@ -51,6 +51,6 @@ func (u *VoucherUsecase) DeleteByID(id int) error {
 	return u.repo.DeleteByID(id)
 }
 
-func (u *VoucherUsecase) Verify(code string) error {
+func (u *VoucherUsecase) Verify(code string) (int, error) {
 	return u.repo.Verify(code)
 }
