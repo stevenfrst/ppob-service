@@ -26,16 +26,6 @@ func NewProductDelivery(uc product.IProductUsecase) *ProductDelivery {
 	}
 }
 
-// GetTagihanPLN godoc
-// @Summary Get Random Product
-// @Description Get Random Tagihan Product
-// @Tags Product
-// @Accept json
-// @Produce json
-// @Success 200 {object} delivery.JSONSuccessResult{}
-// @Success 400 {object} delivery.JSONBadReqResult{}
-// @Success 500 {object} delivery.JSONInternalResult{}
-// @Router /v1/product/pln [get]
 func (p *ProductDelivery) GetTagihanPLN(c echo.Context) error {
 	resp, err := p.usecase.GetTagihanPLN()
 	if err != nil {
@@ -44,17 +34,6 @@ func (p *ProductDelivery) GetTagihanPLN(c echo.Context) error {
 	return delivery.SuccessResponse(c, response.FromDomain(resp))
 }
 
-// GetProduct godoc
-// @Summary GetProduct via Params
-// @Description Get Product via Param
-// @Tags Product
-// @Accept json
-// @Produce json
-// @Param id path int64 true "ID Category"
-// @Success 200 {object} delivery.JSONSuccessResult{}
-// @Success 400 {object} delivery.JSONBadReqResult{}
-// @Success 500 {object} delivery.JSONInternalResult{}
-// @Router /v1/product/{id} [get]
 func (p *ProductDelivery) GetProduct(c echo.Context) error {
 	idParam, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -69,18 +48,6 @@ func (p *ProductDelivery) GetProduct(c echo.Context) error {
 	return delivery.SuccessResponse(c, response.FromDomainList(resp))
 }
 
-// EditProduct godoc
-// @Summary Edit Product
-// @Description Edit Product via JSON
-// @Tags Product
-// @Accept json
-// @Produce json
-// @Security BearerAuth
-// @Param  user body request.EditProduct true "User Data"
-// @Success 200 {object} delivery.JSONSuccessResult{}
-// @Success 400 {object} delivery.JSONBadReqResult{}
-// @Success 500 {object} delivery.JSONInternalResult{}
-// @Router /v1/product [put]
 func (p *ProductDelivery) EditProduct(c echo.Context) error {
 	var productReq request.EditProduct
 	err := c.Bind(&productReq)
@@ -98,18 +65,6 @@ func (p *ProductDelivery) EditProduct(c echo.Context) error {
 	return delivery.SuccessResponse(c, "success")
 }
 
-// DeleteProduct godoc
-// @Summary Delete Product
-// @Description Delete Product via ID
-// @Tags Product
-// @Accept json
-// @Produce json
-// @Security BearerAuth
-// @Param id path string true "ID Product"
-// @Success 200 {object} delivery.JSONSuccessResult{}
-// @Success 400 {object} delivery.JSONBadReqResult{}
-// @Success 500 {object} delivery.JSONInternalResult{}
-// @Router /v1/product/{id} [delete]
 func (p *ProductDelivery) DeleteProduct(c echo.Context) error {
 	idParam, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -123,18 +78,6 @@ func (p *ProductDelivery) DeleteProduct(c echo.Context) error {
 	return delivery.SuccessResponse(c, "success")
 }
 
-// CreateProduct godoc
-// @Summary Create Product
-// @Description Edit Product via JSON
-// @Tags Product
-// @Accept json
-// @Produce json
-// @Security BearerAuth
-// @Param  user body request.CreateProduct true "Product"
-// @Success 200 {object} delivery.JSONSuccessResult{}
-// @Success 400 {object} delivery.JSONBadReqResult{}
-// @Success 500 {object} delivery.JSONInternalResult{}
-// @Router /v1/product [post]
 func (p *ProductDelivery) CreateProduct(c echo.Context) error {
 	var deliveryModel request.CreateProduct
 	if err := c.Bind(&deliveryModel); err != nil {
@@ -152,16 +95,6 @@ func (p *ProductDelivery) CreateProduct(c echo.Context) error {
 	return delivery.SuccessResponse(c, "success")
 }
 
-// GetAllProducts godoc
-// @Summary Get all Product w pagination
-// @Description Get Random Tagihan Product
-// @Tags Product
-// @Accept json
-// @Produce json
-// @Success 200 {object} delivery.JSONSuccessResult{}
-// @Success 400 {object} delivery.JSONBadReqResult{}
-// @Success 500 {object} delivery.JSONInternalResult{}
-// @Router /v1/product/all [get]
 func (p *ProductDelivery) GetAllProducts(c echo.Context) error {
 	page, _ := strconv.Atoi(c.QueryParam("page"))
 	if page == 0 {
@@ -186,16 +119,6 @@ func (p *ProductDelivery) GetAllProducts(c echo.Context) error {
 	return delivery.SuccessResponse(c, response.FromDomainList(resp))
 }
 
-// GetCategory godoc
-// @Summary Get all Product w pagination
-// @Description Get Random Tagihan Product
-// @Tags Category
-// @Accept json
-// @Produce json
-// @Success 200 {object} delivery.JSONSuccessResult{}
-// @Success 400 {object} delivery.JSONBadReqResult{}
-// @Success 500 {object} delivery.JSONInternalResult{}
-// @Router /v1/category [get]
 func (p *ProductDelivery) GetCategory(c echo.Context) error {
 	resp := p.usecase.GetAllCategory()
 	if resp[0].ID == 0 {
@@ -204,16 +127,6 @@ func (p *ProductDelivery) GetCategory(c echo.Context) error {
 	return delivery.SuccessResponse(c, response.FromDomainCategoryList(resp))
 }
 
-// GetSubCategory godoc
-// @Summary Get all Product w pagination
-// @Description Get Random Tagihan Product
-// @Tags Category
-// @Accept json
-// @Produce json
-// @Success 200 {object} delivery.JSONSuccessResult{}
-// @Success 400 {object} delivery.JSONBadReqResult{}
-// @Success 500 {object} delivery.JSONInternalResult{}
-// @Router /v1/subcategory [get]
 func (p *ProductDelivery) GetSubCategory(c echo.Context) error {
 	resp := p.usecase.GetAllSubCategory()
 	if resp[0].ID == 0 {
@@ -222,18 +135,6 @@ func (p *ProductDelivery) GetSubCategory(c echo.Context) error {
 	return delivery.SuccessResponse(c, response.FromDomainSubCategoryList(resp))
 }
 
-// EditSubCategory godoc
-// @Summary Edit subcategory
-// @Description Edit subcategory via JSON
-// @Tags Category
-// @Accept json
-// @Produce json
-// @Security BearerAuth
-// @Param  user body request.SubCategory true "User Data"
-// @Success 200 {object} delivery.JSONSuccessResult{}
-// @Success 400 {object} delivery.JSONBadReqResult{}
-// @Success 500 {object} delivery.JSONInternalResult{}
-// @Router /v1/subcategory [put]
 func (p *ProductDelivery) EditSubCategory(c echo.Context) error {
 	var deliveryModel request.SubCategory
 	err := c.Bind(&deliveryModel)
@@ -247,18 +148,6 @@ func (p *ProductDelivery) EditSubCategory(c echo.Context) error {
 	return delivery.SuccessResponse(c, "success")
 }
 
-// CreateCategory godoc
-// @Summary Create Product
-// @Description Edit Product via JSON
-// @Tags Category
-// @Accept json
-// @Produce json
-// @Security BearerAuth
-// @Param  user body request.Category true "Product"
-// @Success 200 {object} delivery.JSONSuccessResult{}
-// @Success 400 {object} delivery.JSONBadReqResult{}
-// @Success 500 {object} delivery.JSONInternalResult{}
-// @Router /v1/category [post]
 func (p *ProductDelivery) CreateCategory(c echo.Context) error {
 	var deliveryModel request.Category
 	err := c.Bind(&deliveryModel)
@@ -278,18 +167,6 @@ func (p *ProductDelivery) CreateCategory(c echo.Context) error {
 	return delivery.SuccessResponse(c, "success")
 }
 
-// DeleteCategory godoc
-// @Summary Delete Product
-// @Description Delete Product via ID
-// @Tags Category
-// @Accept json
-// @Produce json
-// @Security BearerAuth
-// @Param id path string true "ID Category"
-// @Success 200 {object} delivery.JSONSuccessResult{}
-// @Success 400 {object} delivery.JSONBadReqResult{}
-// @Success 500 {object} delivery.JSONInternalResult{}
-// @Router /v1/category/{id} [delete]
 func (p *ProductDelivery) DeleteCategory(c echo.Context) error {
 	idParam, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -303,18 +180,6 @@ func (p *ProductDelivery) DeleteCategory(c echo.Context) error {
 	return delivery.SuccessResponse(c, "success")
 }
 
-// DeleteSubCategory godoc
-// @Summary Delete Product
-// @Description Delete Product via ID
-// @Tags Category
-// @Accept json
-// @Produce json
-// @Security BearerAuth
-// @Param id path string true "ID Category"
-// @Success 200 {object} delivery.JSONSuccessResult{}
-// @Success 400 {object} delivery.JSONBadReqResult{}
-// @Success 500 {object} delivery.JSONInternalResult{}
-// @Router /v1/subcategory/{id} [delete]
 func (p *ProductDelivery) DeleteSubCategory(c echo.Context) error {
 	idParam, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
