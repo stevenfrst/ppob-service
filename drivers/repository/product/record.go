@@ -9,7 +9,7 @@ import (
 
 type Product struct {
 	ID            uint   `gorm:"primarykey"`
-	Name          string `gorm:"unique"`
+	Name          string
 	Description   string
 	CategoryID    uint
 	Category      Category

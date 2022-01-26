@@ -47,8 +47,8 @@ type DetailTransaction struct {
 }
 
 type Product struct {
-	ID            uint   `gorm:"primarykey"`
-	Name          string `gorm:"unique"`
+	ID            uint `gorm:"primarykey"`
+	Name          string
 	Description   string
 	CategoryID    uint
 	Category      Category
@@ -141,7 +141,7 @@ func (t *Transaction) ToHistoryDomain() transaction.HistoryDomain {
 		FraudStatus:       t.FraudStatus,
 		PaymentType:       t.PaymentType,
 		Provider:          t.Provider,
-		CreatedAt: t.DetailTransaction.CreatedAt,
+		CreatedAt:         t.DetailTransaction.CreatedAt,
 	}
 }
 
