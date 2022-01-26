@@ -65,12 +65,15 @@ func (p *ProductRepository) GetAllProduct() ([]product.Domain, error) {
 func (p *ProductRepository) GetProductByID(id int) Product {
 	var repoModel Product
 	p.db.Find(&repoModel).Where("id = ?", id)
+	log.Println("DEBUG = ",id,repoModel.ID)
 	return repoModel
 }
 
 func (p *ProductRepository) EditProduct(item product.Domain) error {
+	log.Println(item)
 	var repoModel Product
 	repoModel = p.GetProductByID(int(item.ID))
+	repoModel.ID = item.ID
 	repoModel.Name = item.Name
 	repoModel.Price = item.Price
 	repoModel.Description = item.Description

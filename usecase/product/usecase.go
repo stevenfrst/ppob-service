@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/go-sql-driver/mysql"
 	"github.com/minio/minio-go/v7"
+	"log"
 	"math/rand"
 	"ppob-service/helpers/errorHelper"
 	"time"
@@ -47,6 +48,7 @@ func (p *ProductUsecase) GetProduct(id int) ([]Domain, error) {
 }
 
 func (p *ProductUsecase) EditProduct(item Domain) error {
+	log.Println(item)
 	err := p.repo.EditProduct(item)
 	if err != nil {
 		return err
