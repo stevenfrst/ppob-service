@@ -115,7 +115,7 @@ func dbMigrate(db *gorm.DB) {
 		},
 		{
 			ID:       7,
-			Name:     "kfc",
+			Name:     "KFC",
 			Tax:      1000,
 			ImageURL: "https://app.stevenhoyo.co/static/kfc.png",
 		},
@@ -164,7 +164,7 @@ func dbMigrate(db *gorm.DB) {
 
 		{
 			ID:       99,
-			Name:     "PLN Prabayar",
+			Name:     "PLN Pascabayar",
 			Tax:      2500,
 			ImageURL: "https://app.stevenhoyo.co/static/pln.png",
 		},
